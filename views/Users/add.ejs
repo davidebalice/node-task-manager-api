@@ -1,0 +1,159 @@
+<%- contentFor('HeaderCss') %> <%- contentFor('breadcrumb') %>
+
+<div class="row">
+  <div class="col-12">
+    <div
+      class="page-title-box d-flex align-items-center justify-content-between"
+    >
+      <h4 class="mb-0">Add user</h4>
+
+      <div class="page-title-right">
+        <ol class="breadcrumb m-0">
+          <li class="breadcrumb-item">
+            <a href="javascript:void(0);">Users</a>
+          </li>
+          <li class="breadcrumb-item active">Add user</li>
+        </ol>
+      </div>
+    </div>
+  </div>
+</div>
+
+<%- contentFor('body') %> <% if (message && message.length > 0) { %>
+<ul class="errors">
+  <%= message %>
+</ul>
+<% } %>
+
+<div class="row">
+  <div class="col-12">
+    <div class="card">
+      <div class="card-header">
+        <a href="/users" class="back-button">
+          <button
+            type="button"
+            class="btn btn-success waves-effect waves-light mb-2 me-2"
+          >
+            <i
+              class="mdi mdi-arrow-left-thick me-1"
+              style="font-size: 14px"
+            ></i>
+            Back
+          </button>
+        </a>
+
+        <h4 class="card-title">New user</h4>
+        <p class="card-title-desc">Add a user</p>
+      </div>
+
+      <form method="post" action="/add/user">
+        <div class="card-body">
+          
+          <div class="mb-3 row">
+            <label for="example-text-input" class="col-md-2 col-form-label">
+              Name<b style="color:red">*</b>
+            </label>
+            <div class="col-md-10">
+              <input
+                class="form-control"
+                type="text"
+                value="<%= formData && formData.name ? formData.name : '' %>"
+                name="name"
+              />
+            </div>
+          </div>
+
+          <div class="mb-3 row">
+            <label for="example-text-input" class="col-md-2 col-form-label">
+              Surname<b style="color:red">*</b>
+            </label>
+            <div class="col-md-10">
+              <input
+                class="form-control"
+                type="text"
+                value="<%= formData && formData.surname ? formData.surname : '' %>"
+                name="surname"
+              />
+            </div>
+          </div>
+
+          <div class="mb-3 row">
+            <label for="example-text-input" class="col-md-2 col-form-label">
+              Email<b style="color:red">*</b>
+            </label>
+            <div class="col-md-10">
+              <input
+                class="form-control"
+                type="text"
+                value="<%= formData && formData.email ? formData.email : '' %>"
+                name="email"
+              />
+            </div>
+          </div>
+          
+          <div class="mb-3 row">
+            <label for="example-text-input" class="col-md-2 col-form-label">
+              Role<b style="color:red">*</b>
+            </label>
+            <div class="col-md-10">
+              <select class="form-select" name="role">
+                <option>- Select -</option>
+                <option value="user" <%= formData && formData.role === 'user' ? ' selected ' : '' %>>User</option>
+                <option value="guide" <%= formData && formData.role === 'guide' ? ' selected ' : '' %>>Guide</option>
+                <option value="lead-guide" <%= formData && formData.role === 'lead-guide' ? ' selected ' : '' %>>Lead-guide</option>
+                <option value="admin" <%= formData && formData.role === 'admin' ? ' selected ' : '' %>>Admin</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="mb-3 row">
+            <label for="example-text-input" class="col-md-2 col-form-label">
+              Password<b style="color:red">*</b>
+            </label>
+            <div class="col-md-10">
+              <input
+                class="form-control"
+                type="password"
+                value="<%= formData && formData.password ? formData.password : '' %>"
+                name="password"
+              />
+            </div>
+          </div>
+
+          <div class="mb-3 row">
+            <label for="example-text-input" class="col-md-2 col-form-label">
+              Password confirmation<b style="color:red">*</b>
+            </label>
+            <div class="col-md-10">
+              <input
+                class="form-control"
+                type="password"
+                value="<%= formData && formData.passwordConfirm ? formData.passwordConfirm : '' %>"
+                name="passwordConfirm"
+              />
+            </div>
+          </div>
+
+          <div class="mt-4 row">
+            <label for="example-text-input" class="col-md-2 col-form-label">
+            </label>
+            <div class="col-md-10">
+              <button type="submit" class="btn btn-primary w-md">
+                <i
+                  class="mdi mdi-plus bold me-1"
+                  style="font-size: 14px"
+                ></i>
+                Add user
+              </button>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<script src="/assets/libs/@ckeditor/ckeditor5-build-classic/build/ckeditor.js"></script>
+<script src="/assets/js/pages/form-editor.init.js"></script>
+
+<%- contentFor('FooterJs') %> <%- contentFor('BottomJs') %>

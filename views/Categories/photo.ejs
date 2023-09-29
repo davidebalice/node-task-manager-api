@@ -1,0 +1,193 @@
+<%- contentFor('HeaderCss') %> <%- contentFor('breadcrumb') %>
+
+<div class="row">
+  <div class="col-12">
+    <div
+      class="page-title-box d-flex align-items-center justify-content-between"
+    >
+      <h4 class="mb-0">Photo event</h4>
+
+      <div class="page-title-right">
+        <ol class="breadcrumb m-0">
+          <li class="breadcrumb-item">
+            <a href="javascript:void(0);">Events</a>
+          </li>
+          <li class="breadcrumb-item active">Photo event</li>
+        </ol>
+      </div>
+    </div>
+  </div>
+</div>
+
+<%- contentFor('body') %> <% if (message && message.length > 0) { %>
+<ul class="errors">
+  <li><%= message %></li>
+</ul>
+<% } %>
+
+<div class="row">
+  <div class="col-12">
+    <div class="card">
+      <div class="card-header">
+        <a href="/events" class="back-button">
+          <button
+            type="button"
+            class="btn btn-success btn-rounded waves-effect waves-light mb-2 me-2"
+          >
+            <i
+              class="mdi mdi-arrow-left-thick me-1"
+              style="font-size: 14px"
+            ></i>
+            Back
+          </button>
+        </a>
+
+        <h4 class="card-title">Photo event</h4>
+        <p class="card-title-desc">Change a main photo</p>
+      </div>
+
+      <form
+        method="post"
+        action="/event/photo/<%= formData._id %>"
+        enctype="multipart/form-data"
+      >
+        <div class="card-body">
+          <div class="mb-3 row">
+            <label for="example-text-input" class="col-md-2 col-form-label">
+              Event title
+            </label>
+            <div class="col-md-10">
+              <h3><%= formData && formData.name ? formData.name : '' %></h3>
+            </div>
+          </div>
+
+          <div class="mb-3 row">
+            <label for="example-text-input" class="col-md-2 col-form-label">
+              Main photo<b style="color: red">*</b>
+            </label>
+            <div class="col-md-10">
+              <input class="form-control" type="file" name="imageCover" />
+              <img
+                src="<%= process.env.NODE_URL %>/img/events/<%= formData.imageCover %>"
+                style="width: 280px; height: auto; margin-top: 40px"
+                onerror="this.onerror=null;this.src='/placeholder.jpg';"
+              />
+            </div>
+          </div>
+
+          <div class="mt-5 mb-3 row">
+            <label for="example-text-input" class="col-md-2 col-form-label">
+            </label>
+            <div class="col-md-10">
+              <button type="submit" class="btn btn-primary w-md">Send</button>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-12">
+    <div class="card">
+      <div class="card-header">
+        <a href="/events" class="back-button">
+          <button
+            type="button"
+            class="btn btn-success btn-rounded waves-effect waves-light mb-2 me-2"
+          >
+            <i
+              class="mdi mdi-arrow-left-thick me-1"
+              style="font-size: 14px"
+            ></i>
+            Back
+          </button>
+        </a>
+
+        <h4 class="card-title">Gallery event</h4>
+        <p class="card-title-desc">Change a gallery of the event</p>
+      </div>
+
+      <form
+        method="post"
+        action="/event/gallery/<%= formData._id %>"
+        enctype="multipart/form-data"
+      >
+        <div class="card-body">
+          <div class="mb-3 row">
+            <label for="example-text-input" class="col-md-2 col-form-label">
+              Event title
+            </label>
+            <div class="col-md-10">
+              <h3><%= formData && formData.name ? formData.name : '' %></h3>
+            </div>
+          </div>
+
+          <div class="mb-3 row">
+            <label for="example-text-input" class="col-md-2 col-form-label">
+              Gallery upload (multiple select)<b style="color: red">*</b>
+            </label>
+            <div class="col-md-10">
+              <input class="form-control" type="file" name="images" multiple />
+            </div>
+          </div>
+        </form>
+        <div class="mt-5 mb-3 row">
+          <label for="example-text-input" class="col-md-2 col-form-label">
+          </label>
+          <div class="col-md-10">
+            <button type="submit" class="btn btn-primary w-md">Send</button>
+          </div>
+        </div>
+
+        <div class="mt-5 mb-3 row">
+          <label for="example-text-input" class="col-md-2 col-form-label">
+          </label>
+          <div class="col-md-10">
+            <div class="row">
+              <% formData.images.forEach(function(image) { %>
+              <div style=" width: fit-content;">
+                <img
+                  src="/img/events/<%= image %>"
+                  alt="Immagine"
+                  style="width: 210px"
+                />
+                <form method="POST" action="/gallery/delete">
+                  <input type="hidden" name="id" value="<%= formData._id %>" />
+                  <input type="hidden" name="image" value="<%= image %>" />
+                  <button type="submit"  class="btn btn-danger mt-2 mb-5" >
+                    <i class="mdi mdi-delete font-size-18"></i>
+                  </button>
+                </form>
+
+
+
+
+          
+
+
+
+
+
+
+
+              </div>
+              <% }); %>
+            </div>
+          </div>
+        </div>
+
+
+
+          
+        </div>
+      
+    </div>
+  </div>
+</div>
+
+<script src="/assets/libs/@ckeditor/ckeditor5-build-classic/build/ckeditor.js"></script>
+<script src="/assets/js/pages/form-editor.init.js"></script>
+
+<%- contentFor('FooterJs') %> <%- contentFor('BottomJs') %>

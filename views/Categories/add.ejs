@@ -1,0 +1,110 @@
+<%- contentFor('HeaderCss') %> <%- contentFor('breadcrumb') %>
+
+<div class="row">
+  <div class="col-12">
+    <div
+      class="page-title-box d-flex align-items-center justify-content-between"
+    >
+      <h4 class="mb-0">Add category</h4>
+
+      <div class="page-title-right">
+        <ol class="breadcrumb m-0">
+          <li class="breadcrumb-item">
+            <a href="javascript:void(0);">Categories</a>
+          </li>
+          <li class="breadcrumb-item active">Add category</li>
+        </ol>
+      </div>
+    </div>
+  </div>
+</div>
+
+<%- contentFor('body') %> <% if (message && message.length > 0) { %>
+<ul class="errors">
+  <%= message %>
+</ul>
+<% } %>
+
+<div class="row">
+  <div class="col-12">
+    <div class="card">
+      <div class="card-header">
+        <a href="/categories" class="back-button">
+          <button
+            type="button"
+            class="btn btn-success waves-effect waves-light mb-2 me-2"
+          >
+            <i
+              class="mdi mdi-arrow-left-thick me-1"
+              style="font-size: 14px"
+            ></i>
+            Back
+          </button>
+        </a>
+
+        <h4 class="card-title">New category</h4>
+        <p class="card-title-desc">Add a new category</p>
+      </div>
+
+      <form method="post" action="/add/category">
+        <div class="card-body">
+          <div class="mb-3 row">
+            <label for="example-text-input" class="col-md-2 col-form-label">
+              Category<b style="color: red">*</b>
+            </label>
+            <div class="col-md-10">
+              <input
+                class="form-control"
+                type="text"
+                value="<%= formData && formData.name ? formData.name : '' %>"
+                name="name"
+              />
+            </div>
+          </div>
+
+          <div class="mb-3 row">
+            <label for="example-text-input" class="col-md-2 col-form-label">
+              Description
+            </label>
+            <div class="col-md-10">
+              <textarea id="ckeditor-classic" name="description">
+<%= formData && formData.description ? formData.description : '' %></textarea
+              >
+            </div>
+          </div>
+
+          <div class="mt-4 row">
+            <label for="example-text-input" class="col-md-2 col-form-label">
+            </label>
+            <div class="col-md-10">
+              <button type="submit" class="btn btn-primary w-md">
+                <i class="mdi mdi-plus bold me-1" style="font-size: 14px"></i>
+                Add category
+              </button>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<script src="/assets/libs/@ckeditor/ckeditor5-build-classic/build/ckeditor.js"></script>
+<script src="/assets/js/pages/form-editor.init.js"></script>
+<script>
+  const typeDateSelect = document.getElementById('typeDateSelect');
+  const rangeDiv = document.getElementById('rangeDiv');
+  function handleTypeDateChange() {
+    const selectedValue = typeDateSelect.value;
+
+    if (selectedValue === 'range') {
+      rangeDiv.style.display = 'flex';
+    } else {
+      rangeDiv.style.display = 'none';
+    }
+  }
+
+  typeDateSelect.addEventListener('change', handleTypeDateChange);
+  handleTypeDateChange();
+</script>
+<%- contentFor('FooterJs') %> <%- contentFor('BottomJs') %>

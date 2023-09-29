@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Login</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta content="Login" name="description" />
+    <link rel="shortcut icon" href="/assets/images/favicon.ico" />
+
+    <%- include ('../Partials/HeaderStyle') %>
+  </head>
+
+  <body data-layout="horizontal" data-topbar="dark">
+    <div class="authentication-bg min-vh-100">
+      <div class="container">
+        <div class="d-flex flex-column min-vh-100 px-3 pt-4">
+          <div class="row justify-content-center my-auto">
+            <div class="col-md-8 col-lg-6 col-xl-5">
+              <div class="card">
+                <div class="card-body p-4">
+                  <div class="text-center mt-2">
+                    <img src="/img/logo2.png" alt="" height="42" />
+                    <h5 class="text-primary mt-4 mb-3">Access to backend</h5>
+                    <p class="text-muted">email: ....</p>
+                    <p class="text-muted">password: ....</p>
+                  </div>
+                  <div class="p-2 mt-4">
+                    <% if(error.length> 0) { %>
+                    <div class="alert alert-danger" role="alert">
+                      <%= error %>
+                    </div>
+                    <% } %> <% if(message.length> 0) { %>
+                    <div class="alert alert-info" role="alert">
+                      <%= message %>
+                    </div>
+                    <% } %>
+                    <form action="/login" method="post">
+                      <div class="mb-3">
+                        <label class="form-label" for="username">Email</label>
+                        <input
+                          type="text"
+                          class="form-control"
+                          id="username"
+                          name="email"
+                          placeholder="Enter username"
+                          value="admin@companyname.com"
+                        />
+                      </div>
+
+                      <div class="mb-3">
+                        <div class="float-end">
+                          <a href="forgot-password" class="text-muted"
+                            >Forgot password?</a
+                          >
+                        </div>
+                        <label class="form-label" for="userpassword"
+                          >Password</label
+                        >
+                        <input
+                          type="password"
+                          class="form-control"
+                          id="userpassword"
+                          name="password"
+                          value="123456"
+                          placeholder="Enter password"
+                        />
+                      </div>
+
+                      <div class="form-check">
+                        <input
+                          type="checkbox"
+                          class="form-check-input"
+                          id="auth-remember-check"
+                        />
+                        <label
+                          class="form-check-label"
+                          for="auth-remember-check"
+                          >Remember me</label
+                        >
+                      </div>
+
+                      <div class="mt-3 text-end">
+                        <button
+                          class="btn btn-primary w-sm waves-effect waves-light"
+                          type="submit"
+                        >
+                          Log In
+                        </button>
+                      </div>
+                    </form>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-lg-12">
+              <div class="text-center text-muted p-4">
+                <p class="text-white-50">
+                  ©
+                  <script>
+                    document.write(new Date().getFullYear());
+                  </script>
+                  Davide Balice
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <%- include ('../Partials/VendorScript') %>
+  </body>
+</html>

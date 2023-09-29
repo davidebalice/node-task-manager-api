@@ -1,0 +1,218 @@
+<%- contentFor('HeaderCss') %> <%- contentFor('breadcrumb') %>
+
+<div class="row">
+  <div class="col-12">
+    <div
+      class="page-title-box d-flex align-items-center justify-content-between"
+    >
+      <h4 class="mb-0">Edit event</h4>
+
+      <div class="page-title-right">
+        <ol class="breadcrumb m-0">
+          <li class="breadcrumb-item">
+            <a href="javascript:void(0);">Events</a>
+          </li>
+          <li class="breadcrumb-item active">Edit event</li>
+        </ol>
+      </div>
+    </div>
+  </div>
+</div>
+
+<%- contentFor('body') %> <% if (message && message.length > 0) { %>
+<ul class="errors">
+  <%= message %>
+</ul>
+<% } %>
+
+<div class="row">
+  <div class="col-12">
+    <div class="card">
+      <div class="card-header">
+        <a href="/events" class="back-button">
+          <button
+            type="button"
+            class="btn btn-success btn-rounded waves-effect waves-light mb-2 me-2"
+          >
+            <i
+              class="mdi mdi-arrow-left-thick me-1"
+              style="font-size: 14px"
+            ></i>
+            Back
+          </button>
+        </a>
+      </div>
+
+      <form method="post" action="/event/<%= formData._id %>">
+        <div class="card-body">
+
+          <div class="mb-3 row">
+            <label for="example-text-input" class="col-md-2 col-form-label">
+              Type of event<b style="color:red">*</b>
+            </label>
+            <div class="col-md-10">
+              <select 
+                class="form-select" 
+                id="typeDateSelect"
+                name="typeDate"
+                style="max-width: 200px"
+              >
+                <option value="single" <%= formData && formData.typeDate === 'single' ? ' selected ' : '' %>>Single date</option>
+                <option value="range" <%= formData && formData.typeDate === 'range' ? ' selected ' : '' %>>Range date</option>
+              </select>
+            </div>
+          </div>
+          
+          <div class="mb-3 row">
+            <label for="example-text-input" class="col-md-2 col-form-label">
+              Start date<b style="color: red">*</b>
+            </label>
+            <div class="col-md-10">
+              <input
+                class="form-control"
+                style="max-width: 200px"
+                type="date"
+                value="<%= formattedStartDate %>"
+                name="startDate"
+              />
+            </div>
+          </div>
+
+          <div class="mb-3 row" style="display:none" id="rangeDiv">
+            <label for="example-text-input" class="col-md-2 col-form-label">
+              End date<b style="color: red">*</b>
+            </label>
+            <div class="col-md-10">
+              <input
+                class="form-control"
+                style="max-width: 200px"
+                type="date"
+                value="<%= formattedEndDate %>"
+                name="endDate"
+              />
+            </div>
+          </div>
+        
+      
+          <div class="mb-3 row">
+            <label for="example-text-input" class="col-md-2 col-form-label">
+              Category<b style="color:red">*</b>
+            </label>
+            <div class="col-md-10">
+              <select 
+                class="form-select" 
+                id="categorySelect"
+                name="category"
+                style="max-width: 200px"
+              >
+              <option value=""> - Select - </option>
+              <% for (let category of categories) { %>
+                <option value="<%= category._id %>" <%= category._id.toString() === (formData.category ?? '').toString() ? 'selected' : '' %>><%= category.name %></option>
+              <% } %>
+              </select>
+            </div>
+          </div>
+          
+          <div class="mb-3 row">
+            <label for="example-text-input" class="col-md-2 col-form-label">
+              Subcategory
+            </label>
+            <div class="col-md-10">
+              <select 
+                class="form-select" 
+                id="subcategorySelect"
+                name="subcategory"
+                style="max-width: 200px"
+              >
+              <option value=""> - Select - </option>
+              <% for (let subcategory of subcategories) { %>
+                <option value="<%= subcategory._id %>" <%= subcategory._id.toString() === formData.subcategory.toString() ? 'selected' : '' %>><%= subcategory.name %></option>
+              <% } %>
+              </select>
+            </div>
+          </div>
+          
+          <div class="mb-3 row">
+            <label for="example-text-input" class="col-md-2 col-form-label">
+              <b>Event title</b><b style="color:red">*</b>
+            </label>
+            <div class="col-md-10">
+              <input
+                class="form-control"
+                type="text"
+                value="<%= formData && formData.name ? formData.name : '' %>"
+                name="name"
+              />
+            </div>
+          </div>
+
+          <div class="mb-3 row">
+            <label for="example-text-input" class="col-md-2 col-form-label">
+              Short description<b style="color:red">*</b>
+            </label>
+            <div class="col-md-10">
+              <textarea id="ckeditor-classic-short" name="summary"><%= formData && formData.summary ? formData.summary : '' %></textarea>
+            </div>
+          </div>
+
+          <div class="mb-3 row">
+            <label for="example-text-input" class="col-md-2 col-form-label">
+              Long description<b style="color:red">*</b>
+            </label>
+            <div class="col-md-10">
+              <textarea id="ckeditor-classic" name="description"><%= formData && formData.description ? formData.description : '' %></textarea>
+            </div>
+          </div>
+
+          <div class="mt-4 row">
+            <label for="example-text-input" class="col-md-2 col-form-label">
+            </label>
+            <div class="col-md-10">
+              <button type="submit" class="btn btn-primary w-md">Save</button>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<script src="/assets/libs/@ckeditor/ckeditor5-build-classic/build/ckeditor.js"></script>
+<script src="/assets/js/pages/form-editor.init.js"></script>
+<script>
+  const typeDateSelect = document.getElementById("typeDateSelect");
+  const rangeDiv = document.getElementById("rangeDiv");
+  function handleTypeDateChange() {
+    const selectedValue = typeDateSelect.value;
+
+    if (selectedValue === "range") {
+      rangeDiv.style.display = "flex"; 
+    } else {
+      rangeDiv.style.display = "none"; 
+    }
+  }
+
+  typeDateSelect.addEventListener("change", handleTypeDateChange);
+  handleTypeDateChange();
+
+const categorySelect = document.getElementById('categorySelect');
+const subcategorySelect = document.getElementById('subcategorySelect');
+
+categorySelect.addEventListener('change', () => {
+  const categoryId = categorySelect.value;
+
+  fetch(`/subcategories/${categoryId}`)
+    .then((response) => response.json())
+    .then((subcategories) => {
+      subcategorySelect.innerHTML = '<option value=""> - Select - </option>';
+      subcategories.forEach((subcategory) => {
+        const option = document.createElement('option');
+        option.value = subcategory._id;
+        option.textContent = subcategory.name;
+        subcategorySelect.appendChild(option);
+      });
+    })
+    .catch((error) => console.error('Errore durante la fetch delle sottocategorie:', error));
+});
+</script>
+<%- contentFor('FooterJs') %> <%- contentFor('BottomJs') %>
