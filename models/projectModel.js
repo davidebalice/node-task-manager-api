@@ -10,11 +10,6 @@ const projectSchema = new mongoose.Schema(
       maxlength: ['100', 'max 100 characters'],
       minlength: ['6', 'min 6 characters'],
     },
-    category: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'Category',
-      required: true,
-    },
     summary: {
       type: String,
       trim: true,
@@ -29,19 +24,10 @@ const projectSchema = new mongoose.Schema(
       type: String,
       trim: true,
     },
-    background: {
-      type: String,
-      trim: true,
-    },
     images: [String],
     createdAt: {
       type: Date,
       default: Date.now(),
-      select: false,
-    },
-    createdAt: {
-      type: Date,
-      required: [true, 'Project must have a start date'],
     },
     owner: {
       type: mongoose.Schema.ObjectId,
@@ -61,6 +47,13 @@ const projectSchema = new mongoose.Schema(
         },
       },
     ],
+    client: {
+      type: mongoose.Schema.ObjectId,
+      ref: 'Client',
+    },
+    budget: {
+      type: Number,
+    },
     active: {
       type: Boolean,
       default: true,

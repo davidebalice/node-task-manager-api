@@ -24,6 +24,10 @@ router
 
 router
   .route('/project/:id')
+  .get(projectController.getProject);
+
+router
+  .route('/project/edit/:id')
   .get(projectController.editProject)
   .post(demoMode, authController.protect, authController.restrictTo('admin'), projectController.updateProject);
 

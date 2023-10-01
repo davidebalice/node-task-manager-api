@@ -2,6 +2,8 @@ const multer = require('multer');
 const mongoose = require('mongoose');
 const sharp = require('sharp');
 const Project = require('../models/projectModel');
+const Task = require('../models/taskModel');
+const Client = require('../models/clientModel');
 const Category = require('../models/categoryModel');
 const ApiQuery = require('../middlewares/apiquery');
 const AppError = require('../middlewares/error');
@@ -111,28 +113,34 @@ exports.getAllProjects = catchAsync(async (req, res, next) => {
 });
 
 exports.addProject = catchAsync(async (req, res, next) => {
-  const categories = await Category.find({}).sort({ order: 1 });
-  res.locals = { title: 'Add project' };
-  res.render('Projects/add', {
-    formData: '',
-    message: '',
-    categories: categories,
+  const clients = await Client.find({}).sort({ companyName: 1 });
+  res.status(200).json({
+    title: 'Add project',
+    owner: res.locals.user._id,
+    clients: clients.map((client) => ({
+      _id: client._id,
+      companyName: client.companyName,
+    })),
   });
 });
 
 exports.createProject = catchAsync(async (req, res, next) => {
   try {
     req.body._id = new mongoose.Types.ObjectId();
+    console.log(req.body);
     await Project.create(req.body);
-    res.redirect('/projects?m=1');
+
+    res.status(200).json({
+      title: 'Create project',
+      create: 'success',
+    });
   } catch (err) {
-    const categories = await Category.find().sort({ order: 1 });
-    res.render('Projects/add', {
-      status: 200,
-      title: 'Add project',
+    //const categories = await Category.find().sort({ order: 1 });
+
+    res.status(200).json({
+      title: 'Create project',
       formData: req.body,
       message: err.message,
-      categories,
     });
   }
 });
@@ -142,17 +150,31 @@ exports.deleteProject = catchAsync(async (req, res, next) => {
   if (!doc) {
     return next(new AppError('No document found with that ID', 404));
   }
-  res.redirect('/projects?m=2');
+  res.status(200).json({
+    title: 'Delete project',
+    create: 'success',
+  });
 });
 
-exports.getProject = factory.getOne(Project, { path: 'reviews' });
+exports.getProject = catchAsync(async (req, res, next) => {
+  const project = await Project.findById(req.params.id);
+
+  if (!project) {
+    return next(new AppError('No document found with that ID', 404));
+  }
+
+  const tasks = await Task.find({ project_id: req.params.id }).sort({ createdAt: 1 });
+
+  res.status(200).json({
+    title: 'Project',
+    project,
+    tasks,
+  });
+});
 
 exports.editProject = catchAsync(async (req, res, next) => {
   let query = await Project.findById(req.params.id);
   const doc = await query;
-
-  console.log('doc.category');
-  console.log(doc.category);
 
   if (!doc) {
     return next(new AppError('No document found with that ID', 404));
@@ -160,8 +182,8 @@ exports.editProject = catchAsync(async (req, res, next) => {
   const categories = await Category.find().sort({ order: 1 });
 
   let message = '';
-  res.render('Projects/edit', {
-    status: 200,
+
+  res.status(200).json({
     title: 'Edit project',
     formData: doc,
     message,
@@ -177,7 +199,10 @@ exports.updateProject = catchAsync(async (req, res, next) => {
   if (!doc) {
     return next(new AppError('No document found with that ID', 404));
   }
-  res.redirect(doc._id);
+  res.status(200).json({
+    title: 'Update project',
+    create: 'success',
+  });
 });
 
 exports.photoProject = catchAsync(async (req, res, next) => {
@@ -200,7 +225,11 @@ exports.updatePhoto = catchAsync(async (req, res, next) => {
   if (!doc) {
     return next(new AppError('No document found with that ID', 404));
   }
-  res.redirect('/project/photo/' + doc._id);
+  //res.redirect('/project/photo/' + doc._id);
+  res.status(200).json({
+    title: 'Update photo',
+    create: 'success',
+  });
 });
 
 exports.updateGallery = catchAsync(async (req, res, next) => {
@@ -210,7 +239,11 @@ exports.updateGallery = catchAsync(async (req, res, next) => {
     return next(new AppError('No document found with that ID', 404));
   }
 
-  res.redirect('/project/photo/' + req.params.id);
+  //res.redirect('/project/photo/' + req.params.id);
+  res.status(200).json({
+    title: 'Update gallery',
+    create: 'success',
+  });
 });
 
 exports.deleteGallery = catchAsync(async (req, res, next) => {
@@ -237,7 +270,11 @@ exports.deleteGallery = catchAsync(async (req, res, next) => {
     console.log('File not exists:', image);
   }
 
-  res.redirect('/project/photo/' + req.body.id);
+  //res.redirect('/project/photo/' + req.body.id);
+  res.status(200).json({
+    title: 'Delete photo',
+    create: 'success',
+  });
 });
 
 exports.activeProject = catchAsync(async (req, res, next) => {

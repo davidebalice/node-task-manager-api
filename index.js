@@ -84,18 +84,16 @@ app.get('/layouts/', function (req, res) {
   res.render('view');
 });
 
-var expressLayouts = require('express-ejs-layouts');
-app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'ejs');
-app.use(expressLayouts);
 
 const projectRouter = require('./routers/projectRoutes');
 const userRouter = require('./routers/userRoutes');
+const clientRouter = require('./routers/clientRoutes');
 const taskRouter = require('./routers/taskRoutes');
 const categoryRouter = require('./routers/categoryRoutes');
 
 app.use('/api/', projectRouter);
 app.use('/api/', userRouter);
+app.use('/api/', clientRouter);
 app.use('/api/', taskRouter);
 app.use('/api/', categoryRouter);
 
