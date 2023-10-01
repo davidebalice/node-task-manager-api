@@ -40,11 +40,6 @@ const projectSchema = new mongoose.Schema(
           type: mongoose.Schema.Types.ObjectId,
           ref: 'User',
         },
-        role: {
-          type: String,
-          enum: ['viewer', 'editor', 'admin'],
-          default: 'viewer',
-        },
       },
     ],
     client: {

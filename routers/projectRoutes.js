@@ -22,14 +22,18 @@ router
   .get(authController.protect, projectController.addProject)
   .post(demoMode, authController.protect, authController.restrictTo('admin'), projectController.createProject);
 
-router
-  .route('/project/:id')
-  .get(projectController.getProject);
+router.route('/project/:id').get(demoMode, authController.protect, projectController.getProject);
 
 router
   .route('/project/edit/:id')
-  .get(projectController.editProject)
+  .get(demoMode, authController.protect, projectController.editProject)
   .post(demoMode, authController.protect, authController.restrictTo('admin'), projectController.updateProject);
+
+router.route('/project/members/:id').get(demoMode, authController.protect, projectController.membersProject);
+
+router.route('/add/member/project/').post(demoMode, authController.protect, projectController.AddMemberProject);
+
+router.route('/remove/member/project/').post(demoMode, authController.protect, projectController.RemoveMemberProject);
 
 router
   .route('/project/photo/:id')
