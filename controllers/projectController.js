@@ -157,7 +157,7 @@ exports.deleteProject = catchAsync(async (req, res, next) => {
 });
 
 exports.getProject = catchAsync(async (req, res, next) => {
-  const project = await Project.findById(req.params.id).populate('members.user', 'name surname email role');
+  const project = await Project.findById(req.params.id);
 
   if (!project) {
     return next(new AppError('No document found with that ID', 404));
@@ -173,7 +173,7 @@ exports.getProject = catchAsync(async (req, res, next) => {
 });
 
 exports.editProject = catchAsync(async (req, res, next) => {
-  let query = await Project.findById(req.params.id).populate('members.user', 'name surname email role');
+  let query = await Project.findById(req.params.id);
   const doc = await query;
 
   if (!doc) {
@@ -206,14 +206,14 @@ exports.updateProject = catchAsync(async (req, res, next) => {
 });
 
 exports.membersProject = catchAsync(async (req, res, next) => {
-  const project = await Project.findById(req.params.id).populate('members.user', 'name surname email role');
+  const project = await Project.findById(req.params.id);
 
   if (!project) {
     return next(new AppError('No document found with that ID', 404));
   }
 
   const allUsers = await User.find().sort({ surname: 1 });
-  const memberUserIds = project.members.map((member) => member.user._id.toString());
+  const memberUserIds = project.members.map((member) => member._id.toString());
   const filteredUsers = allUsers.filter((user) => !memberUserIds.includes(user._id.toString()));
 
   res.status(200).json({
@@ -224,24 +224,22 @@ exports.membersProject = catchAsync(async (req, res, next) => {
 });
 
 exports.AddMemberProject = catchAsync(async (req, res, next) => {
-  const project = await Project.findById(req.body.project_id).populate('members.user', 'name surname email role');
+  const project = await Project.findById(req.body.project_id);
   const member = await User.findById(req.body.member_id);
 
   if (!project || !member) {
     return next(new AppError('No document found with that ID', 404));
   }
 
-  const memberIds = project.members.map((member) => member.user._id.toString());
+  const memberIds = project.members.map((member) => member._id.toString());
   if (!memberIds.includes(member._id)) {
-    const addMember = {
-      user: member._id,
-    };
+    const addMember = member._id;
     project.members.push(addMember);
     await project.save();
   }
 
   const allUsers = await User.find().sort({ surname: 1 });
-  const memberUserIds = project.members.map((member) => member.user.toString());
+  const memberUserIds = project.members.map((member) => member.toString());
   const filteredUsers = allUsers.filter((user) => !memberUserIds.includes(user._id.toString()));
 
   res.status(200).json({
@@ -260,7 +258,7 @@ exports.RemoveMemberProject = catchAsync(async (req, res, next) => {
     return next(new AppError('No document found with that ID', 404));
   }
 
-  const memberIds = project.members.map((member) => member.user._id.toString());
+  const memberIds = project.members.map((member) => member._id.toString());
 
   console.log('memberIds');
   console.log(memberIds);
@@ -270,7 +268,7 @@ exports.RemoveMemberProject = catchAsync(async (req, res, next) => {
   if (memberIds.includes(member._id.toString())) {
     console.log('qui');
     const memberIndex = project.members.findIndex(
-      (projectMember) => projectMember.user.toString() === member._id.toString()
+      (projectMember) => projectMember.toString() === member._id.toString()
     );
     console.log(memberIndex);
     project.members.splice(memberIndex, 1);
@@ -278,7 +276,7 @@ exports.RemoveMemberProject = catchAsync(async (req, res, next) => {
   }
 
   const allUsers = await User.find().sort({ surname: 1 });
-  const memberUserIds = project.members.map((member) => member.user.toString());
+  const memberUserIds = project.members.map((member) => member.toString());
   const filteredUsers = allUsers.filter((user) => !memberUserIds.includes(user._id.toString()));
 
   res.status(200).json({

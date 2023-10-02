@@ -18,30 +18,21 @@ exports.setProjectUserIds = (req, res, next) => {
 };
 
 exports.getAllTasks = catchAsync(async (req, res, next) => {
-  let filterData = {};
+  console.log(req.params.id);
+
+  let filterData = { project_id: req.params.id };
   if (req.query.key) {
     const regex = new RegExp(req.query.key, 'i');
-    filterData = { name: { $regex: regex } };
+    filterData = { project_id: req.params.id, name: { $regex: regex } };
   }
   const page = req.query.page * 1 || 1;
   const limit = req.query.limit * 1 || 10;
   const skip = (page - 1) * limit;
-  const tasks = await Task.find(filterData)
-    .sort('-createdAt')
-    .skip(skip)
-    .limit(limit)
-    .populate({
-      path: 'project_id',
-      select: 'name _id',
-    })
-    .populate({
-      path: 'user_id',
-      select: 'name surname _id',
-    });
+  const tasks = await Task.find(filterData).sort('-createdAt').skip(skip).limit(limit);
 
   const formattedTasks = tasks.map((task) => {
-    const formattedDate = moment(task.createdAt).format('DD/MM/YYYY HH:mm');
-    return { ...task._doc, createdAt: formattedDate };
+    const formattedDate = moment(task.createdAt).format('DD/MM/YYYY');
+    return { ...task._doc, formattedDate: formattedDate };
   });
 
   const count = await Task.countDocuments();
@@ -55,13 +46,9 @@ exports.getAllTasks = catchAsync(async (req, res, next) => {
     }
   }
 
-  res.render('Tasks/tasks', {
-    title: 'Task',
+  res.status(200).json({
+    title: 'Tasks',
     tasks: formattedTasks,
-    page,
-    limit,
-    totalPages,
-    message,
   });
 });
 

@@ -6,7 +6,7 @@ const router = express.Router({ mergeParams: true });
 
 router.use(authController.protect);
 
-router.route('/tasks').get(authController.protect, authController.restrictTo('admin'), taskController.getAllTasks);
+router.route('/tasks/:id').get(authController.protect, authController.restrictTo('admin'), taskController.getAllTasks);
 
 router
   .route('/task/:id')

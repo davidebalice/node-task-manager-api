@@ -36,10 +36,8 @@ const projectSchema = new mongoose.Schema(
     },
     members: [
       {
-        user: {
-          type: mongoose.Schema.Types.ObjectId,
-          ref: 'User',
-        },
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
       },
     ],
     client: {
@@ -64,6 +62,21 @@ projectSchema.virtual('tasks', {
   ref: 'Task',
   foreignField: 'project_id',
   localField: '_id',
+});
+
+projectSchema.pre('find', function (next) {
+  this.populate('members.user');
+  next();
+});
+
+projectSchema.pre('find', function (next) {
+  this.populate('members', 'name surname email role');
+  next();
+});
+
+projectSchema.pre('findOne', function (next) {
+  this.populate('members', 'name surname email role');
+  next();
 });
 
 projectSchema.post('save', (doc, next) => {

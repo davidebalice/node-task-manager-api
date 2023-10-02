@@ -3,11 +3,33 @@ const Project = require('./projectModel');
 
 const taskSchema = new mongoose.Schema(
   {
-    message: {
+    name: {
       type: String,
       required: [true, 'Insert description text of task'],
     },
+    description: {
+      type: String,
+    },
+    status: {
+      type: String,
+      enum: ['Open', 'Close'],
+      default: 'Open',
+    },
+    priority: {
+      type: String,
+      enum: ['High', 'Medium', 'Low', 'Urgent'],
+      default: 'Medium',
+    },
+    label: {
+      type: String,
+      enum: ['Task', 'Bug', 'Quote'],
+      default: 'Task',
+    },
     createdAt: {
+      type: Date,
+      default: Date.now,
+    },
+    deadline: {
       type: Date,
       default: Date.now,
     },
@@ -23,15 +45,8 @@ const taskSchema = new mongoose.Schema(
     },
     members: [
       {
-        user: {
-          type: mongoose.Schema.Types.ObjectId,
-          ref: 'User',
-        },
-        role: {
-          type: String,
-          enum: ['viewer', 'editor'],
-          default: 'viewer',
-        },
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
       },
     ],
   },
@@ -45,11 +60,13 @@ taskSchema.index({ task_id: 1, owner: 1 }, { unique: true });
 taskSchema.index({ owner: 1 });
 taskSchema.index({ project_id: 1 });
 
-taskSchema.pre(/^find/, function (next) {
-  this.populate({
-    path: 'user_id',
-    select: 'name surname photo',
-  });
+taskSchema.pre('find', function (next) {
+  this.populate('members', 'name surname email role').populate('project_id');
+  next();
+});
+
+taskSchema.pre('findOne', function (next) {
+  this.populate('members', 'name surname email role').populate('project_id');
   next();
 });
 
