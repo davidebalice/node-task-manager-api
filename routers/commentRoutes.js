@@ -12,15 +12,16 @@ router
 
 router.route('/add/comment/').post(demoMode, authController.protect, commentController.createComment);
 
+router
+  .route('/delete/comment/')
+  .post(demoMode, authController.protect, authController.restrictTo('admin'), commentController.deleteComment);
+
 /*
 router
   .route('/task/:id')
-  .get(taskController.editTask)
-  .post(demoMode, authController.protect, authController.restrictTo('admin'), taskController.updateTask);
+  .get(commentController.editTask)
+  .post(demoMode, authController.protect, authController.restrictTo('admin'), commentController.updateTask);
 
-router
-  .route('/task/delete/:id')
-  .post(demoMode, authController.protect, authController.restrictTo('admin', 'lead-guide'), taskController.deleteTask);
 */
 
 module.exports = router;

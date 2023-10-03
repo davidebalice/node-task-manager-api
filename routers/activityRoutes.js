@@ -9,19 +9,21 @@ router.use(authController.protect);
 router
   .route('/task/:id')
   .get(authController.protect, authController.restrictTo('admin'), activityController.getAllActivities);
+
 router
   .route('/activity/update-status')
   .post(authController.protect, authController.restrictTo('admin'), activityController.updateStatus);
 
-/*
 router
-  .route('/task/:id')
-  .get(taskController.editTask)
-  .post(demoMode, authController.protect, authController.restrictTo('admin'), taskController.updateTask);
+  .route('/update/activity/')
+  .post(authController.protect, authController.restrictTo('admin'), activityController.updateActivity);
 
 router
-  .route('/task/delete/:id')
-  .post(demoMode, authController.protect, authController.restrictTo('admin', 'lead-guide'), taskController.deleteTask);
-*/
+  .route('/add/activity/')
+  .post(authController.protect, authController.restrictTo('admin'), activityController.createActivity);
+
+router
+  .route('/delete/activity/')
+  .post(authController.protect, authController.restrictTo('admin'), activityController.deleteActivity);
 
 module.exports = router;

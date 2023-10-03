@@ -46,26 +46,39 @@ exports.getComments = catchAsync(async (req, res, next) => {
   }
 });
 
+async function getCommentsData(res, taskId, title, status) {
+  try {
+    let filterData = { task_id: taskId };
+    const comments = await Comment.find(filterData).sort('-createdAt');
+    res.status(200).json({
+      title: title,
+      status: status,
+      comments,
+    });
+  } catch (err) {
+    console.error(err);
+    throw err;
+  }
+}
+
 exports.createComment = catchAsync(async (req, res, next) => {
   try {
     req.body._id = new mongoose.Types.ObjectId();
     req.body.owner = res.locals.user._id;
     await Comment.create(req.body);
-    const comments = await Comment.find({ task_id: req.body.task_id }).sort('-createdAt');
 
-    res.status(200).json({
-      title: 'Comment created',
-      create: 'success',
-      comments,
-    });
+    await getCommentsData(res, req.body.task_id, 'Comment created', 'success');
   } catch (err) {
-    const comments = await Comment.find({ task_id: req.body.task_id }).sort('-createdAt');
-    res.status(200).json({
-      title: 'Error',
-      formData: req.body,
-      message: err.message,
-      comments,
-    });
+    await getCommentsData(res, req.body.task_id, 'Comment error', 'error');
+  }
+});
+
+exports.deleteComment = catchAsync(async (req, res, next) => {
+  console.log(req.body.id);
+  const doc = await Comment.findByIdAndDelete(req.body.id);
+  await getCommentsData(res, req.body.task_id, 'Comment deleted', 'success');
+  if (!doc) {
+    await getCommentsData(res, req.body.task_id, 'Comment error', 'error');
   }
 });
 
@@ -116,11 +129,5 @@ exports.updateTask = catchAsync(async (req, res, next) => {
   res.redirect(doc._id);
 });
 
-exports.deleteTask = catchAsync(async (req, res, next) => {
-  const doc = await Task.findByIdAndDelete(req.params.id);
-  if (!doc) {
-    return next(new AppError('No document found with that ID', 404));
-  }
-  res.redirect('/tasks?m=2');
-});
+
 */
