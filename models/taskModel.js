@@ -1,5 +1,4 @@
 const mongoose = require('mongoose');
-const Project = require('./projectModel');
 
 const taskSchema = new mongoose.Schema(
   {
@@ -56,7 +55,6 @@ const taskSchema = new mongoose.Schema(
   }
 );
 
-taskSchema.index({ task_id: 1, owner: 1 }, { unique: true });
 taskSchema.index({ owner: 1 });
 taskSchema.index({ project_id: 1 });
 

@@ -2,6 +2,7 @@ const mongoose = require('mongoose');
 const moment = require('moment');
 const sharp = require('sharp');
 const Task = require('../models/taskModel');
+const Comment = require('../models/commentModel');
 const Project = require('../models/projectModel');
 const factory = require('./handlerFactory');
 const AppError = require('../middlewares/error');
@@ -11,46 +12,64 @@ const fs = require('fs');
 const path = require('path');
 const { ObjectId } = require('mongodb');
 
-exports.setProjectUserIds = (req, res, next) => {
-  if (!req.body.project) req.body.project_id = req.params.projectId;
-  if (!req.body.user) req.body.user_id = req.user.id;
-  next();
-};
-
-exports.getAllTasks = catchAsync(async (req, res, next) => {
-  let filterData = { project_id: req.params.id };
-  if (req.query.key) {
-    const regex = new RegExp(req.query.key, 'i');
-    filterData = { project_id: req.params.id, name: { $regex: regex } };
-  }
-  const page = req.query.page * 1 || 1;
-  const limit = req.query.limit * 1 || 10;
-  const skip = (page - 1) * limit;
-  const tasks = await Task.find(filterData).sort('-createdAt').skip(skip).limit(limit);
-
-  const formattedTasks = tasks.map((task) => {
-    const formattedDate = moment(task.createdAt).format('DD/MM/YYYY');
-    const formattedDeadline = moment(task.deadline).format('DD/MM/YYYY');
-    return { ...task._doc, formattedDate, formattedDeadline };
-  });
-
-  const count = await Task.countDocuments();
-  const totalPages = Math.ceil(count / limit);
-  let message = '';
-  if (req.query.m) {
-    if (req.query.m === '1') {
-      message = 'Task added';
-    } else if (req.query.m === '2') {
-      message = 'Task deleted';
+exports.getComments = catchAsync(async (req, res, next) => {
+  try {
+    let filterData = { task_id: req.params.id };
+    if (req.query.key) {
+      const regex = new RegExp(req.query.key, 'i');
+      filterData = { project_id: req.params.id, name: { $regex: regex } };
     }
-  }
 
-  res.status(200).json({
-    title: 'Tasks',
-    tasks: formattedTasks,
-  });
+    const comments = await Comment.find(filterData).sort('-createdAt');
+    const task = await Task.findOne({ _id: req.params.id }).populate('project_id');
+
+    const formattedComment = comments.map((comment) => {
+      const formattedDate = moment(comment.createdAt).format('DD/MM/YYYY');
+      const formattedDeadline = moment(comment.deadline).format('DD/MM/YYYY');
+      return { ...comment._doc, formattedDate, formattedDeadline };
+    });
+
+    formattedComment.sort((a, b) => b.createdAt - a.createdAt);
+
+    const count = await Comment.countDocuments();
+
+    res.status(200).json({
+      title: 'Comments',
+      countComments: count,
+      comments: formattedComment,
+      task,
+    });
+  } catch (err) {
+    res.status(200).json({
+      message: err.message,
+    });
+  }
 });
 
+exports.createComment = catchAsync(async (req, res, next) => {
+  try {
+    req.body._id = new mongoose.Types.ObjectId();
+    req.body.owner = res.locals.user._id;
+    await Comment.create(req.body);
+    const comments = await Comment.find({ task_id: req.body.task_id }).sort('-createdAt');
+
+    res.status(200).json({
+      title: 'Comment created',
+      create: 'success',
+      comments,
+    });
+  } catch (err) {
+    const comments = await Comment.find({ task_id: req.body.task_id }).sort('-createdAt');
+    res.status(200).json({
+      title: 'Error',
+      formData: req.body,
+      message: err.message,
+      comments,
+    });
+  }
+});
+
+/*
 exports.getTask = factory.getOne(Task);
 
 exports.editTask = catchAsync(async (req, res, next) => {
@@ -104,3 +123,4 @@ exports.deleteTask = catchAsync(async (req, res, next) => {
   }
   res.redirect('/tasks?m=2');
 });
+*/

@@ -84,18 +84,21 @@ app.get('/layouts/', function (req, res) {
   res.render('view');
 });
 
-
 const projectRouter = require('./routers/projectRoutes');
 const userRouter = require('./routers/userRoutes');
 const clientRouter = require('./routers/clientRoutes');
 const taskRouter = require('./routers/taskRoutes');
-const categoryRouter = require('./routers/categoryRoutes');
+const activityRouter = require('./routers/activityRoutes');
+const commentRouter = require('./routers/commentRoutes');
+const fileRouter = require('./routers/fileRoutes');
 
 app.use('/api/', projectRouter);
 app.use('/api/', userRouter);
 app.use('/api/', clientRouter);
 app.use('/api/', taskRouter);
-app.use('/api/', categoryRouter);
+app.use('/api/', activityRouter);
+app.use('/api/', commentRouter);
+app.use('/api/', fileRouter);
 
 http.listen(8000, function () {
   console.log('listening on *:8000');

@@ -2,6 +2,8 @@ const mongoose = require('mongoose');
 const moment = require('moment');
 const sharp = require('sharp');
 const Task = require('../models/taskModel');
+const Activity = require('../models/activityModel');
+const Comment = require('../models/commentModel');
 const Project = require('../models/projectModel');
 const factory = require('./handlerFactory');
 const AppError = require('../middlewares/error');
@@ -17,40 +19,75 @@ exports.setProjectUserIds = (req, res, next) => {
   next();
 };
 
-exports.getAllTasks = catchAsync(async (req, res, next) => {
-  let filterData = { project_id: req.params.id };
-  if (req.query.key) {
-    const regex = new RegExp(req.query.key, 'i');
-    filterData = { project_id: req.params.id, name: { $regex: regex } };
-  }
-  const page = req.query.page * 1 || 1;
-  const limit = req.query.limit * 1 || 10;
-  const skip = (page - 1) * limit;
-  const tasks = await Task.find(filterData).sort('-createdAt').skip(skip).limit(limit);
-
-  const formattedTasks = tasks.map((task) => {
-    const formattedDate = moment(task.createdAt).format('DD/MM/YYYY');
-    const formattedDeadline = moment(task.deadline).format('DD/MM/YYYY');
-    return { ...task._doc, formattedDate, formattedDeadline };
-  });
-
-  const count = await Task.countDocuments();
-  const totalPages = Math.ceil(count / limit);
-  let message = '';
-  if (req.query.m) {
-    if (req.query.m === '1') {
-      message = 'Task added';
-    } else if (req.query.m === '2') {
-      message = 'Task deleted';
+exports.getAllActivities = catchAsync(async (req, res, next) => {
+  try {
+    let filterData = { task_id: req.params.id };
+    if (req.query.key) {
+      const regex = new RegExp(req.query.key, 'i');
+      filterData = { project_id: req.params.id, name: { $regex: regex } };
     }
-  }
+    const page = req.query.page * 1 || 1;
+    const limit = req.query.limit * 1 || 10;
+    const skip = (page - 1) * limit;
+    const activities = await Activity.find(filterData).sort('-createdAt').skip(skip).limit(limit);
+    const comments = await Comment.find({ task_id: req.params.id }).sort('-createdAt');
+    const task = await Task.findOne({ _id: req.params.id }).populate('project_id');
 
-  res.status(200).json({
-    title: 'Tasks',
-    tasks: formattedTasks,
-  });
+    const formattedActivity = activities.map((activity) => {
+      const formattedDate = moment(activity.createdAt).format('DD/MM/YYYY');
+      const formattedDeadline = moment(activity.deadline).format('DD/MM/YYYY');
+      return { ...activity._doc, formattedDate, formattedDeadline };
+    });
+
+    const count = await Activity.countDocuments();
+    const totalPages = Math.ceil(count / limit);
+
+    res.status(200).json({
+      title: 'Task detail',
+      activities: formattedActivity,
+      task,
+      comments,
+    });
+  } catch (err) {
+    res.status(200).json({
+      message: err.message,
+    });
+  }
 });
 
+exports.updateStatus = catchAsync(async (req, res, next) => {
+  try {
+    const activityId = req.body.activityId;
+    const checked = req.body.checked;
+    const activity = await Activity.findOne({ _id: activityId });
+
+    if (!activity) {
+      return res.status(404).json({
+        message: 'Actovity not found',
+      });
+    }
+
+    activity.status = checked ? 'Done' : 'In progress';
+    try {
+      await activity.save();
+    } catch (error) {
+      console.error('Error:', error);
+    }
+
+    let message;
+    activity.status = checked ? (message = 'Done') : (message = 'In progress');
+
+    res.status(200).json({
+      status: message,
+    });
+  } catch (err) {
+    res.status(200).json({
+      message: err.message,
+    });
+  }
+});
+
+/*
 exports.getTask = factory.getOne(Task);
 
 exports.editTask = catchAsync(async (req, res, next) => {
@@ -104,3 +141,4 @@ exports.deleteTask = catchAsync(async (req, res, next) => {
   }
   res.redirect('/tasks?m=2');
 });
+*/

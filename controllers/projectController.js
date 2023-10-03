@@ -127,7 +127,7 @@ exports.addProject = catchAsync(async (req, res, next) => {
 exports.createProject = catchAsync(async (req, res, next) => {
   try {
     req.body._id = new mongoose.Types.ObjectId();
-    console.log(req.body);
+    req.body.owner = res.locals.user._id;
     await Project.create(req.body);
 
     res.status(200).json({
@@ -135,8 +135,6 @@ exports.createProject = catchAsync(async (req, res, next) => {
       create: 'success',
     });
   } catch (err) {
-    //const categories = await Category.find().sort({ order: 1 });
-
     res.status(200).json({
       title: 'Create project',
       formData: req.body,
