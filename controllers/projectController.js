@@ -1,4 +1,5 @@
 const multer = require('multer');
+const multerStorage = multer.memoryStorage();
 const mongoose = require('mongoose');
 const sharp = require('sharp');
 const Project = require('../models/projectModel');
@@ -12,7 +13,6 @@ const factory = require('./handlerFactory');
 const fs = require('fs');
 const path = require('path');
 const { ObjectId } = require('mongodb');
-const multerStorage = multer.memoryStorage();
 const { parseISO, format, startOfMonth, endOfMonth } = require('date-fns');
 
 const multerFilter = (req, file, cb) => {

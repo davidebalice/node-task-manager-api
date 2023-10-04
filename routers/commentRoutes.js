@@ -16,6 +16,10 @@ router
   .route('/delete/comment/')
   .post(demoMode, authController.protect, authController.restrictTo('admin'), commentController.deleteComment);
 
+router
+  .route('/update/comment/')
+  .post(authController.protect, authController.restrictTo('admin'), commentController.updateComment);
+
 /*
 router
   .route('/task/:id')

@@ -44,7 +44,7 @@ var session = require('express-session');
 var bodyParser = require('body-parser');
 var flash = require('connect-flash');
 var i18n = require('i18n-express');
-var urlencodeParser = bodyParser.urlencoded({ extended: true });
+
 app.use(cookieParser());
 app.use(
   bodyParser.urlencoded({

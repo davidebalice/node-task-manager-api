@@ -1,4 +1,6 @@
 const mongoose = require('mongoose');
+const multer = require('multer');
+const multerStorage = multer.memoryStorage();
 const moment = require('moment');
 const sharp = require('sharp');
 const Task = require('../models/taskModel');
@@ -46,59 +48,155 @@ exports.getFile = catchAsync(async (req, res, next) => {
   }
 });
 
+async function getFilesData(res, taskId, title, status) {
+  try {
+    let filterData = { task_id: taskId };
+    const files = await File.find(filterData).sort('-createdAt');
+    res.status(200).json({
+      title: title,
+      status: status,
+      files,
+    });
+  } catch (err) {
+    console.error(err);
+    throw err;
+  }
+}
 
-/*
-exports.getTask = factory.getOne(Task);
+exports.createFile = catchAsync(async (req, res, next) => {
+  try {
+    req.body._id = new mongoose.Types.ObjectId();
+    req.body.owner = res.locals.user._id;
+    /*
+    console.log('req.body.name');
+    console.log(req.body.name);
+    console.log('req.body.file');
+    console.log(req.body.files);
+    console.log('req.file');
+    console.log(req.file);
+    console.log('req.files');
+    console.log(req.files);
 
-exports.editTask = catchAsync(async (req, res, next) => {
-  let query = await Task.findById(req.params.id)
-    .populate({
-      path: 'project_id',
-      select: 'name _id',
-    })
-    .populate({
-      path: 'user_id',
-      select: 'name surname _id',
+    console.log('req.files');
+    console.log(req.files);
+*/
+    /*
+  res.status(200).json({
+      reqtest: 'test',
+      reqfiles: req.files,
+      reqbodyfiles: req.body.files,
+      reqbodyname: req.body.name,
+      reqbody: req.body,
     });
 
-  const doc = await query;
 
-  if (!doc) {
-    return next(new AppError('No document found with that ID', 404));
-  }
-
-  const formattedDate = moment(doc.createdAt).format('DD/MM/YYYY HH:mm');
-  doc.user_id.name = doc.user_id.name.charAt(0).toUpperCase() + doc.user_id.name.slice(1).toLowerCase();
-  doc.user_id.surname = doc.user_id.surname.charAt(0).toUpperCase() + doc.user_id.surname.slice(1).toLowerCase();
-
-  let message = '';
-  res.render('Tasks/edit', {
-    status: 200,
-    title: 'Edit task',
-    formData: {
-      ...doc.toObject(),
-      createdAt: formattedDate,
-    },
-    message: message,
-  });
-});
-
-exports.updateTask = catchAsync(async (req, res, next) => {
-  const doc = await Task.findByIdAndUpdate(req.params.id, req.body, {
-    new: true,
-    runValidators: true,
-  });
-  if (!doc) {
-    return next(new AppError('No document found with that ID', 404));
-  }
-  res.redirect(doc._id);
-});
-
-exports.deleteTask = catchAsync(async (req, res, next) => {
-  const doc = await Task.findByIdAndDelete(req.params.id);
-  if (!doc) {
-    return next(new AppError('No document found with that ID', 404));
-  }
-  res.redirect('/tasks?m=2');
-});
 */
+
+    console.log(req.body.task_id);
+    console.log(req.body.project_id);
+
+    const fileNames = req.files.map((file) => file.originalname);
+    console.log(fileNames);
+
+    for (const file of req.files) {
+      const tempPath = file.path;
+      const destinationPath = path.join('./uploads', file.filename);
+      fs.renameSync(tempPath, destinationPath);
+    }
+
+    for (const fileName of req.files) {
+      const tempPath = fileName.path;
+      const destinationPath = path.join('./uploads', fileName.filename);
+      const fileParts = destinationPath.split('/');
+      const newFileName = fileParts[fileParts.length - 1].replace('uploads\\', '');
+      console.log(newFileName);
+      console.log(newFileName);
+      const file = await File.create({
+        name: req.body.name,
+        file: newFileName,
+        owner: req.body.owner,
+        task_id: req.body.task_id,
+        project_id: req.body.project_id,
+        owner: res.locals.user._id,
+      });
+    }
+
+    await getFilesData(res, req.body.task_id, 'File created', 'success');
+  } catch (err) {
+    console.log(err);
+    //await getFilesData(res, req.body.task_id, 'File error', 'error');
+  }
+});
+
+exports.deleteFile = catchAsync(async (req, res, next) => {
+  console.log(req.body.id);
+  const doc = await File.findByIdAndDelete(req.body.id);
+  await getFilesData(res, req.body.task_id, 'File deleted', 'success');
+  if (!doc) {
+    await getFilesData(res, req.body.task_id, 'File error', 'error');
+  }
+});
+
+exports.updateFile = catchAsync(async (req, res, next) => {
+  try {
+    const fileId = req.body.id;
+    const name = req.body.name;
+
+    console.log(fileId);
+    console.log(name);
+
+    const file = await File.findOne({ _id: fileId });
+
+    if (!file) {
+      return res.status(404).json({
+        message: 'File not found',
+      });
+    }
+
+    file.name = name;
+    try {
+      await file.save();
+    } catch (error) {
+      console.error('Error:', error);
+    }
+
+    await getFilesData(res, file.task_id, 'File created', 'success');
+  } catch (err) {
+    await getFilesData(res, file.task_id, 'File error', 'error');
+  }
+});
+/*
+exports.uploadImage = upload.fields([{ name: 'imageCover', maxCount: 1 }]);
+exports.uploadGallery = upload.fields([{ name: 'images', maxCount: 6 }]);
+*/
+exports.resizeImage = catchAsync(async (req, res, next) => {
+  console.log(req.files.imageCover);
+  if (!req.files.imageCover) return next();
+
+  req.body.imageCover = `project-${req.params.id}-${Date.now()}-cover.jpeg`;
+
+  await sharp(req.files.imageCover[0].buffer)
+    .resize(2000, 1333)
+    .toFormat('jpeg')
+    .jpeg({ quality: 90 })
+    .toFile(`public/img/projects/${req.body.imageCover}`);
+
+  next();
+});
+
+exports.resizeGallery = catchAsync(async (req, res, next) => {
+  if (!req.files.images) return next();
+  req.body.images = [];
+  await Promise.all(
+    req.files.images.map(async (file, i) => {
+      const filename = `project-${req.params.id}-${Date.now()}-${i + 1}.jpeg`;
+      await sharp(file.buffer)
+        .resize(2000, 1333)
+        .toFormat('jpeg')
+        .jpeg({ quality: 90 })
+        .toFile(`public/img/projects/${filename}`);
+      req.body.images.push(filename);
+    })
+  );
+  next();
+});

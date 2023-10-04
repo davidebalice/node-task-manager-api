@@ -82,6 +82,35 @@ exports.deleteComment = catchAsync(async (req, res, next) => {
   }
 });
 
+exports.updateComment = catchAsync(async (req, res, next) => {
+  try {
+    const commentId = req.body.id;
+    const name = req.body.name;
+
+    console.log(commentId);
+    console.log(name);
+
+    const comment = await Comment.findOne({ _id: commentId });
+
+    if (!comment) {
+      return res.status(404).json({
+        message: 'Comment not found',
+      });
+    }
+
+    comment.comment = name;
+    try {
+      await comment.save();
+    } catch (error) {
+      console.error('Error:', error);
+    }
+
+    await getCommentsData(res, comment.task_id, 'Comment created', 'success');
+  } catch (err) {
+    await getCommentsData(res, comment.task_id, 'Comment error', 'error');
+  }
+});
+
 /*
 exports.getTask = factory.getOne(Task);
 

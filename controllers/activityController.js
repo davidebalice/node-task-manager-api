@@ -4,6 +4,7 @@ const sharp = require('sharp');
 const Task = require('../models/taskModel');
 const Activity = require('../models/activityModel');
 const Comment = require('../models/commentModel');
+const File = require('../models/fileModel');
 const Project = require('../models/projectModel');
 const factory = require('./handlerFactory');
 const AppError = require('../middlewares/error');
@@ -52,6 +53,7 @@ exports.getAllActivities = catchAsync(async (req, res, next) => {
     const skip = (page - 1) * limit;
     const activities = await Activity.find(filterData).sort('-createdAt').skip(skip).limit(limit);
     const comments = await Comment.find({ task_id: req.params.id }).sort('-createdAt');
+    const files = await File.find({ task_id: req.params.id }).sort('-createdAt');
     const task = await Task.findOne({ _id: req.params.id }).populate('project_id');
 
     const formattedActivity = activities.map((activity) => {
@@ -61,13 +63,13 @@ exports.getAllActivities = catchAsync(async (req, res, next) => {
     });
 
     const count = await Activity.countDocuments();
-    const totalPages = Math.ceil(count / limit);
 
     res.status(200).json({
       title: 'Task detail',
       activities: formattedActivity,
       task,
       comments,
+      files,
     });
   } catch (err) {
     res.status(200).json({
