@@ -32,15 +32,8 @@ router
   .route('/update/file/')
   .post(authController.protect, authController.restrictTo('admin'), fileController.updateFile);
 
-/*
-router
-  .route('/task/:id')
-  .get(taskController.editTask)
-  .post(demoMode, authController.protect, authController.restrictTo('admin'), taskController.updateTask);
-
-router
-  .route('/task/delete/:id')
-  .post(demoMode, authController.protect, authController.restrictTo('admin', 'lead-guide'), taskController.deleteTask);
-*/
+  router
+  .route('/download/:filename')
+  .get(authController.protect, authController.restrictTo('admin'), fileController.download);
 
 module.exports = router;

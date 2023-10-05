@@ -3,8 +3,6 @@ const moment = require('moment');
 const sharp = require('sharp');
 const Task = require('../models/taskModel');
 const Activity = require('../models/activityModel');
-const Comment = require('../models/commentModel');
-const File = require('../models/fileModel');
 const Project = require('../models/projectModel');
 const factory = require('./handlerFactory');
 const AppError = require('../middlewares/error');
@@ -40,43 +38,6 @@ async function getActivityData(res, taskId, title, status) {
     throw err;
   }
 }
-
-exports.getAllActivities = catchAsync(async (req, res, next) => {
-  try {
-    let filterData = { task_id: req.params.id };
-    if (req.query.key) {
-      const regex = new RegExp(req.query.key, 'i');
-      filterData = { project_id: req.params.id, name: { $regex: regex } };
-    }
-    const page = req.query.page * 1 || 1;
-    const limit = req.query.limit * 1 || 10;
-    const skip = (page - 1) * limit;
-    const activities = await Activity.find(filterData).sort('-createdAt').skip(skip).limit(limit);
-    const comments = await Comment.find({ task_id: req.params.id }).sort('-createdAt');
-    const files = await File.find({ task_id: req.params.id }).sort('-createdAt');
-    const task = await Task.findOne({ _id: req.params.id }).populate('project_id');
-
-    const formattedActivity = activities.map((activity) => {
-      const formattedDate = moment(activity.createdAt).format('DD/MM/YYYY');
-      const formattedDeadline = moment(activity.deadline).format('DD/MM/YYYY');
-      return { ...activity._doc, formattedDate, formattedDeadline };
-    });
-
-    const count = await Activity.countDocuments();
-
-    res.status(200).json({
-      title: 'Task detail',
-      activities: formattedActivity,
-      task,
-      comments,
-      files,
-    });
-  } catch (err) {
-    res.status(200).json({
-      message: err.message,
-    });
-  }
-});
 
 exports.updateStatus = catchAsync(async (req, res, next) => {
   try {

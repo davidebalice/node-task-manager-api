@@ -2,12 +2,8 @@ const express = require('express');
 const router = express.Router();
 const projectController = require('../controllers/projectController');
 const authController = require('../controllers/authController');
-const reviewRouter = require('./taskRoutes');
 const demoMode = require('../middlewares/demo_mode');
 const User = require('../models/userModel');
-const Category = require('../models/categoryModel');
-
-router.use('/:projectId/reviews', reviewRouter);
 
 router.route('/').get(authController.protect, async function (req, res) {
   res.locals = { title: 'Dashboard' };

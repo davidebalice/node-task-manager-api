@@ -67,36 +67,8 @@ exports.createFile = catchAsync(async (req, res, next) => {
   try {
     req.body._id = new mongoose.Types.ObjectId();
     req.body.owner = res.locals.user._id;
-    /*
-    console.log('req.body.name');
-    console.log(req.body.name);
-    console.log('req.body.file');
-    console.log(req.body.files);
-    console.log('req.file');
-    console.log(req.file);
-    console.log('req.files');
-    console.log(req.files);
-
-    console.log('req.files');
-    console.log(req.files);
-*/
-    /*
-  res.status(200).json({
-      reqtest: 'test',
-      reqfiles: req.files,
-      reqbodyfiles: req.body.files,
-      reqbodyname: req.body.name,
-      reqbody: req.body,
-    });
-
-
-*/
-
-    console.log(req.body.task_id);
-    console.log(req.body.project_id);
 
     const fileNames = req.files.map((file) => file.originalname);
-    console.log(fileNames);
 
     for (const file of req.files) {
       const tempPath = file.path;
@@ -109,8 +81,7 @@ exports.createFile = catchAsync(async (req, res, next) => {
       const destinationPath = path.join('./uploads', fileName.filename);
       const fileParts = destinationPath.split('/');
       const newFileName = fileParts[fileParts.length - 1].replace('uploads\\', '');
-      console.log(newFileName);
-      console.log(newFileName);
+
       const file = await File.create({
         name: req.body.name,
         file: newFileName,
@@ -124,13 +95,20 @@ exports.createFile = catchAsync(async (req, res, next) => {
     await getFilesData(res, req.body.task_id, 'File created', 'success');
   } catch (err) {
     console.log(err);
-    //await getFilesData(res, req.body.task_id, 'File error', 'error');
+    await getFilesData(res, req.body.task_id, 'File error', 'error');
   }
 });
 
 exports.deleteFile = catchAsync(async (req, res, next) => {
-  console.log(req.body.id);
   const doc = await File.findByIdAndDelete(req.body.id);
+
+  try {
+    console.log(doc.file);
+    fs.unlinkSync(`./uploads/${doc.file}`);
+  } catch (err) {
+    console.error('Error:', err);
+  }
+
   await getFilesData(res, req.body.task_id, 'File deleted', 'success');
   if (!doc) {
     await getFilesData(res, req.body.task_id, 'File error', 'error');
@@ -165,6 +143,22 @@ exports.updateFile = catchAsync(async (req, res, next) => {
     await getFilesData(res, file.task_id, 'File error', 'error');
   }
 });
+
+exports.download = catchAsync(async (req, res, next) => {
+  const filename = req.params.filename;
+  const filePath = path.join(process.env.FILE_PATH, 'uploads', filename);
+
+  console.log(process.env.FILE_PATH);
+  console.log(filename);
+  console.log(filePath);
+
+  res.download(filePath, (err) => {
+    if (err) {
+      res.status(500).json({ error: 'Error download file.' });
+    }
+  });
+});
+
 /*
 exports.uploadImage = upload.fields([{ name: 'imageCover', maxCount: 1 }]);
 exports.uploadGallery = upload.fields([{ name: 'images', maxCount: 6 }]);

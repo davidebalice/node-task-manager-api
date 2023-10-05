@@ -2,6 +2,9 @@ const mongoose = require('mongoose');
 const moment = require('moment');
 const sharp = require('sharp');
 const Task = require('../models/taskModel');
+const Comment = require('../models/commentModel');
+const File = require('../models/fileModel');
+const Activity = require('../models/activityModel');
 const Project = require('../models/projectModel');
 const factory = require('./handlerFactory');
 const AppError = require('../middlewares/error');
@@ -51,7 +54,45 @@ exports.getAllTasks = catchAsync(async (req, res, next) => {
   });
 });
 
-exports.getTask = factory.getOne(Task);
+exports.getTask = catchAsync(async (req, res, next) => {
+  try {
+    let filterData = { task_id: req.params.id };
+    if (req.query.key) {
+      const regex = new RegExp(req.query.key, 'i');
+      filterData = { project_id: req.params.id, name: { $regex: regex } };
+    }
+
+    const activities = await Activity.find(filterData).sort('-createdAt');
+    const comments = await Comment.find(filterData).sort('-createdAt');
+    const files = await File.find(filterData).sort('-createdAt');
+    const task = await Task.findOne({ _id: req.params.id }).populate('project_id');
+
+    const formattedActivity = activities.map((activity) => {
+      const formattedDate = moment(activity.createdAt).format('DD/MM/YYYY');
+      const formattedDeadline = moment(activity.deadline).format('DD/MM/YYYY');
+      return { ...activity._doc, formattedDate, formattedDeadline };
+    });
+
+    const countActivity = await Activity.countDocuments();
+    const countComments = await Comment.countDocuments();
+    const countFiles = await File.countDocuments();
+
+    res.status(200).json({
+      title: 'Task detail',
+      activities: formattedActivity,
+      task,
+      comments,
+      files,
+      countActivity,
+      countComments,
+      countFiles,
+    });
+  } catch (err) {
+    res.status(200).json({
+      message: err.message,
+    });
+  }
+});
 
 exports.editTask = catchAsync(async (req, res, next) => {
   let query = await Task.findById(req.params.id)

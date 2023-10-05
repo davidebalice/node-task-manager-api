@@ -7,10 +7,6 @@ const router = express.Router({ mergeParams: true });
 router.use(authController.protect);
 
 router
-  .route('/task/:id')
-  .get(authController.protect, authController.restrictTo('admin'), activityController.getAllActivities);
-
-router
   .route('/activity/update-status')
   .post(authController.protect, authController.restrictTo('admin'), activityController.updateStatus);
 
