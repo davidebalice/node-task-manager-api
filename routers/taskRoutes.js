@@ -11,6 +11,15 @@ router.route('/tasks/:id').get(authController.protect, authController.restrictTo
 router.route('/task/:id').get(authController.protect, authController.restrictTo('admin'), taskController.getTask);
 
 router
+  .route('/add/task')
+  .post(demoMode, authController.protect, authController.restrictTo('admin'), taskController.createTask);
+
+router
+  .route('/edit/task/:id')
+  .get(demoMode, authController.protect, taskController.editTask)
+  .post(demoMode, authController.protect, authController.restrictTo('admin'), taskController.updateTask);
+
+router
   .route('/task/delete/:id')
   .post(demoMode, authController.protect, authController.restrictTo('admin', 'lead-guide'), taskController.deleteTask);
 

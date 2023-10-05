@@ -94,54 +94,66 @@ exports.getTask = catchAsync(async (req, res, next) => {
   }
 });
 
-exports.editTask = catchAsync(async (req, res, next) => {
-  let query = await Task.findById(req.params.id)
-    .populate({
-      path: 'project_id',
-      select: 'name _id',
-    })
-    .populate({
-      path: 'user_id',
-      select: 'name surname _id',
+exports.createTask = catchAsync(async (req, res, next) => {
+  try {
+    req.body._id = new mongoose.Types.ObjectId();
+    req.body.owner = res.locals.user._id;
+    await Task.create(req.body);
+
+    res.status(200).json({
+      title: 'Create task',
+      create: 'success',
     });
+  } catch (err) {
+    res.status(200).json({
+      title: 'Create project',
+      formData: req.body,
+      message: err.message,
+    });
+  }
+});
 
-  const doc = await query;
+exports.editTask = catchAsync(async (req, res, next) => {
+  let query = await Task.findById(req.params.id).populate({
+    path: 'project_id',
+    select: 'name _id',
+  });
 
-  if (!doc) {
+  const task = await query;
+
+  if (!task) {
     return next(new AppError('No document found with that ID', 404));
   }
 
-  const formattedDate = moment(doc.createdAt).format('DD/MM/YYYY HH:mm');
-  doc.user_id.name = doc.user_id.name.charAt(0).toUpperCase() + doc.user_id.name.slice(1).toLowerCase();
-  doc.user_id.surname = doc.user_id.surname.charAt(0).toUpperCase() + doc.user_id.surname.slice(1).toLowerCase();
+  const formattedDeadline = moment(task.deadline).format('YYYY-MM-DD');
 
-  let message = '';
-  res.render('Tasks/edit', {
-    status: 200,
+  res.status(200).json({
     title: 'Edit task',
-    formData: {
-      ...doc.toObject(),
-      createdAt: formattedDate,
-    },
-    message: message,
+    task,
+    deadline: formattedDeadline,
+    projectId: task.project_id,
   });
 });
 
 exports.updateTask = catchAsync(async (req, res, next) => {
-  const doc = await Task.findByIdAndUpdate(req.params.id, req.body, {
+  const task = await Task.findByIdAndUpdate(req.params.id, req.body, {
     new: true,
     runValidators: true,
   });
-  if (!doc) {
+  if (!task) {
     return next(new AppError('No document found with that ID', 404));
   }
-  res.redirect(doc._id);
+  res.status(200).json({
+    status: 'success',
+  });
 });
 
 exports.deleteTask = catchAsync(async (req, res, next) => {
-  const doc = await Task.findByIdAndDelete(req.params.id);
-  if (!doc) {
+  const task = await Task.findByIdAndDelete(req.params.id);
+  if (!task) {
     return next(new AppError('No document found with that ID', 404));
   }
-  res.redirect('/tasks?m=2');
+  res.status(200).json({
+    status: 'success',
+  });
 });

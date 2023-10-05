@@ -171,21 +171,16 @@ exports.getProject = catchAsync(async (req, res, next) => {
 });
 
 exports.editProject = catchAsync(async (req, res, next) => {
-  let query = await Project.findById(req.params.id);
-  const doc = await query;
-
-  if (!doc) {
+  const project = await Project.findById(req.params.id);
+  const clients = await Client.find({}).sort({ companyName: 1 });
+  if (!project) {
     return next(new AppError('No document found with that ID', 404));
   }
-  const categories = await Category.find().sort({ order: 1 });
-
-  let message = '';
 
   res.status(200).json({
     title: 'Edit project',
-    formData: doc,
-    message,
-    categories,
+    project,
+    clients,
   });
 });
 

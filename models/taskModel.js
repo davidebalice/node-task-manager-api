@@ -4,7 +4,7 @@ const taskSchema = new mongoose.Schema(
   {
     name: {
       type: String,
-      required: [true, 'Insert description text of task'],
+      required: [true, 'Insert name of task'],
     },
     description: {
       type: String,

@@ -21,7 +21,7 @@ router
 router.route('/project/:id').get(demoMode, authController.protect, projectController.getProject);
 
 router
-  .route('/project/edit/:id')
+  .route('/edit/project/:id')
   .get(demoMode, authController.protect, projectController.editProject)
   .post(demoMode, authController.protect, authController.restrictTo('admin'), projectController.updateProject);
 
