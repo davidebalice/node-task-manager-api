@@ -6,6 +6,8 @@ const AppError = require('../middlewares/error');
 const multer = require('multer');
 const sharp = require('sharp');
 const multerStorage = multer.memoryStorage();
+const path = require('path');
+const bcrypt = require('bcrypt');
 
 const multerFilter = (req, file, cb) => {
   if (file.mimetype.startsWith('image')) {
@@ -47,6 +49,40 @@ exports.getMe = (req, res, next) => {
   next();
 };
 
+exports.getUsers = catchAsync(async (req, res, next) => {
+  const userId = res.locals.user._id;
+  const userRole = res.locals.user.role;
+
+  let filterData = {};
+
+  if (req.query.key) {
+    const regex = new RegExp(req.query.key, 'i');
+    filterData.name = { $regex: regex };
+  }
+  /*
+  if (userRole === 'admin') {
+    filterData.$or = [{ owner: userId }];
+  } else {
+    filterData.$or = [{ owner: userId }, { 'members.user': userId }];
+  }
+*/
+  const setLimit = 12;
+  const limit = req.query.limit * 1 || setLimit;
+  const page = req.query.page * 1 || 1;
+  const skip = (page - 1) * limit;
+  const users = await User.find(filterData).sort({ role: 1, createdAt: -1 }).skip(skip).limit(limit);
+  const count = await User.countDocuments();
+  const totalPages = Math.ceil(count / limit);
+
+  res.status(200).json({
+    users,
+    currentPage: page,
+    page,
+    limit,
+    totalPages,
+  });
+});
+
 exports.updateMe = catchAsync(async (req, res, next) => {
   if (req.body.password || req.body.passwordConfirm) {
     return next(new AppError('This route is not for password updates. Please use /updateMyPassword.', 400));
@@ -77,34 +113,29 @@ exports.deleteMe = catchAsync(async (req, res, next) => {
   });
 });
 
-exports.getAllUsers = catchAsync(async (req, res, next) => {
-  let filterData = {};
-  if (req.query.key) {
-    const regex = new RegExp(req.query.key, 'i');
-    filterData = { name: { $regex: regex } };
+exports.userImg = catchAsync(async (req, res, next) => {
+  const filename = req.params.filename;
+  const filePath = path.join(process.env.FILE_PATH, 'uploads/users', filename);
+  res.sendFile(filePath);
+});
+
+exports.userEmail = catchAsync(async (req, res, next) => {
+  const Email = require('../middlewares/email');
+
+  const text = req.body.data.text;
+  const subject = req.body.data.subject;
+  const emailTo = req.body.data.email;
+
+  const email = new Email(text, subject, emailTo);
+
+  try {
+    await email.send();
+    res.status(200).json({ message: 'Email sended' });
+    console.log('Email sended');
+  } catch (error) {
+    console.error('Error', error);
+    res.status(500).json({ message: 'Error' });
   }
-  const page = req.query.page * 1 || 1;
-  const limit = req.query.limit * 1 || 10;
-  const skip = (page - 1) * limit;
-  const users = await User.find(filterData).sort('-createdAt').skip(skip).limit(limit);
-  const count = await User.countDocuments();
-  const totalPages = Math.ceil(count / limit);
-  let message = '';
-  if (req.query.m) {
-    if (req.query.m === '1') {
-      message = 'User added';
-    } else if (req.query.m === '2') {
-      message = 'User deleted';
-    }
-  }
-  res.render('Users/users', {
-    title: 'Users',
-    users,
-    page,
-    limit,
-    totalPages,
-    message,
-  });
 });
 
 exports.editUser = catchAsync(async (req, res, next) => {
@@ -140,7 +171,6 @@ exports.updateUser = catchAsync(async (req, res, next) => {
 exports.photoUser = catchAsync(async (req, res, next) => {
   let query = await User.findById(req.params.id);
 
-  // if (popOptions) query = query.populate(popOptions);
   const doc = await query;
 
   if (!doc) {
@@ -168,13 +198,24 @@ exports.updatePhoto = catchAsync(async (req, res, next) => {
 exports.createUser = catchAsync(async (req, res, next) => {
   try {
     req.body._id = new mongoose.Types.ObjectId();
-    await User.create(req.body);
-    res.redirect('/users?m=1');
+    const { password, passwordConfirm, name, surname, role, email } = req.body;
+
+    if (password !== passwordConfirm) {
+      return res.status(200).json({ status: 'error', message: 'Password not match' });
+    }
+
+    const hashedPassword = await bcrypt.hash(password, 10);
+    const hashedPasswordConfirm = await bcrypt.hash(passwordConfirm, 10);
+    await User.create({ name, surname, role, email, password: hashedPassword, passwordConfirm: hashedPasswordConfirm });
+
+    res.status(200).json({
+      status: 'success',
+      message: 'success',
+    });
   } catch (err) {
-    res.render('Users/add', {
-      status: 200,
-      title: 'Add user',
-      formData: req.body,
+    console.log(err);
+    res.status(200).json({
+      status: 'error',
       message: err.message,
     });
   }

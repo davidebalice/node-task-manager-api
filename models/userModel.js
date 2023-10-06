@@ -35,7 +35,6 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: [true, 'Enter password'],
     trim: true,
-    maxlength: ['40', 'max 40 characters'],
     minlength: ['8', 'min 8 characters'],
     select: false,
   },
@@ -43,14 +42,14 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: [true, 'Enter password confirmation'],
     trim: true,
-    maxlength: ['40', 'max 40 characters'],
     minlength: ['8', 'min 8 characters'],
+    /*
     validate: {
       validator: function (passwordConfirmation) {
         return passwordConfirmation === this.get('password');
       },
       message: 'Passwords do not match',
-    },
+    },*/
   },
   passwordChangedAt: Date,
   passwordResetToken: String,
@@ -59,6 +58,10 @@ const userSchema = new mongoose.Schema({
     type: Boolean,
     default: true,
     select: false,
+  },
+  createdAt: {
+    type: Date,
+    default: Date.now,
   },
 });
 

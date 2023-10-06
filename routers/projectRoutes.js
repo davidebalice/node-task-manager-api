@@ -11,7 +11,7 @@ router.route('/').get(authController.protect, async function (req, res) {
   res.render('Dashboard/index', { users: users });
 });
 
-router.route('/projects').get(authController.protect, projectController.getAllProjects);
+router.route('/projects').get(authController.protect, projectController.getProjects);
 
 router
   .route('/add/project')

@@ -72,19 +72,16 @@ exports.createFile = catchAsync(async (req, res, next) => {
 
     for (const file of req.files) {
       const tempPath = file.path;
-      const destinationPath = path.join('./uploads', file.filename);
+      const destinationPath = path.join('./uploads/tasks', file.filename);
       fs.renameSync(tempPath, destinationPath);
     }
 
     for (const fileName of req.files) {
       const tempPath = fileName.path;
-      const destinationPath = path.join('./uploads', fileName.filename);
-      const fileParts = destinationPath.split('/');
-      const newFileName = fileParts[fileParts.length - 1].replace('uploads\\', '');
 
       const file = await File.create({
         name: req.body.name,
-        file: newFileName,
+        file: fileName.filename,
         owner: req.body.owner,
         task_id: req.body.task_id,
         project_id: req.body.project_id,
@@ -104,7 +101,7 @@ exports.deleteFile = catchAsync(async (req, res, next) => {
 
   try {
     console.log(doc.file);
-    fs.unlinkSync(`./uploads/${doc.file}`);
+    fs.unlinkSync(`./uploads/tasks/${doc.file}`);
   } catch (err) {
     console.error('Error:', err);
   }
@@ -146,11 +143,7 @@ exports.updateFile = catchAsync(async (req, res, next) => {
 
 exports.download = catchAsync(async (req, res, next) => {
   const filename = req.params.filename;
-  const filePath = path.join(process.env.FILE_PATH, 'uploads', filename);
-
-  console.log(process.env.FILE_PATH);
-  console.log(filename);
-  console.log(filePath);
+  const filePath = path.join(process.env.FILE_PATH, 'uploads/tasks', filename);
 
   res.download(filePath, (err) => {
     if (err) {

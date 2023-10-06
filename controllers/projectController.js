@@ -63,7 +63,7 @@ exports.resizeGallery = catchAsync(async (req, res, next) => {
   next();
 });
 
-exports.getAllProjects = catchAsync(async (req, res, next) => {
+exports.getProjects = catchAsync(async (req, res, next) => {
   const userId = res.locals.user._id;
   const userRole = res.locals.user.role;
 
