@@ -5,10 +5,11 @@ const factory = require('./handlerFactory');
 const AppError = require('../middlewares/error');
 const multer = require('multer');
 const sharp = require('sharp');
-const multerStorage = multer.memoryStorage();
+
 const path = require('path');
 const bcrypt = require('bcrypt');
 
+const multerStorage = multer.memoryStorage();
 const multerFilter = (req, file, cb) => {
   if (file.mimetype.startsWith('image')) {
     cb(null, true);
@@ -22,16 +23,20 @@ const upload = multer({
   fileFilter: multerFilter,
 });
 
-exports.uploadUserPhoto = upload.single('photo');
+exports.uploadPhotoUser = upload.single('photo');
 
-exports.resizeUserPhoto = catchAsync(async (req, res, next) => {
+exports.resizePhotoUser = catchAsync(async (req, res, next) => {
+  console.log(req.file);
   if (!req.file) return next();
   req.file.filename = `user-${req.user.id}-${Date.now()}.jpeg`;
+  console.log('req.file.filename');
+  console.log(req.file.filename);
+  console.log(`${process.env.FILE_PATH}/uploads/users/${req.file.filename}`);
   await sharp(req.file.buffer)
     .resize(500, 500)
     .toFormat('jpeg')
     .jpeg({ quality: 90 })
-    .toFile(`public/assets/images/users/${req.file.filename}`);
+    .toFile(`${process.env.FILE_PATH}/uploads/users/${req.file.filename}`);
 
   next();
 });
@@ -125,7 +130,6 @@ exports.userEmail = catchAsync(async (req, res, next) => {
   const text = req.body.data.text;
   const subject = req.body.data.subject;
   const emailTo = req.body.data.email;
-
   const email = new Email(text, subject, emailTo);
 
   try {
@@ -136,63 +140,6 @@ exports.userEmail = catchAsync(async (req, res, next) => {
     console.error('Error', error);
     res.status(500).json({ message: 'Error' });
   }
-});
-
-exports.editUser = catchAsync(async (req, res, next) => {
-  let query = await User.findById(req.params.id);
-
-  const doc = await query;
-
-  if (!doc) {
-    return next(new AppError('No document found with that ID', 404));
-  }
-  let message = '';
-  res.render('Users/edit', {
-    status: 200,
-    title: 'Edit user',
-    formData: doc,
-    message: message,
-  });
-});
-
-exports.updateUser = catchAsync(async (req, res, next) => {
-  const doc = await User.findByIdAndUpdate(req.params.id, req.body, {
-    new: true,
-    runValidators: true,
-  });
-
-  if (!doc) {
-    return next(new AppError('No document found with that ID', 404));
-  }
-
-  res.redirect(doc._id);
-});
-
-exports.photoUser = catchAsync(async (req, res, next) => {
-  let query = await User.findById(req.params.id);
-
-  const doc = await query;
-
-  if (!doc) {
-    return next(new AppError('No document found with that ID', 404));
-  }
-  let message = '';
-  res.render('User/photo', {
-    status: 200,
-    title: 'Photo user',
-    formData: doc,
-    message: message,
-  });
-});
-
-exports.updatePhoto = catchAsync(async (req, res, next) => {
-  req.body.photo = req.file.filename;
-  const doc = await User.findByIdAndUpdate(req.params.id, req.body);
-
-  if (!doc) {
-    return next(new AppError('No document found with that ID', 404));
-  }
-  res.redirect('/user/photo/' + doc._id);
 });
 
 exports.createUser = catchAsync(async (req, res, next) => {
@@ -213,7 +160,6 @@ exports.createUser = catchAsync(async (req, res, next) => {
       message: 'success',
     });
   } catch (err) {
-    console.log(err);
     res.status(200).json({
       status: 'error',
       message: err.message,
@@ -221,12 +167,76 @@ exports.createUser = catchAsync(async (req, res, next) => {
   }
 });
 
-exports.deleteUser = catchAsync(async (req, res, next) => {
-  const doc = await User.findByIdAndDelete(req.params.id);
-  if (!doc) {
+exports.editUser = catchAsync(async (req, res, next) => {
+  let user = await User.findById(req.params.id);
+
+  if (!user) {
     return next(new AppError('No document found with that ID', 404));
   }
-  res.redirect('/users?m=2');
+
+  res.status(200).json({
+    title: 'Edit user',
+    status: 'success',
+    user,
+  });
+});
+
+exports.updateUser = catchAsync(async (req, res, next) => {
+  try {
+    const user = await User.findByIdAndUpdate(req.params.id, req.body, {
+      new: true,
+      runValidators: true,
+    });
+
+    if (!user) {
+      return next(new AppError('No document found with that ID', 404));
+    }
+    res.status(200).json({
+      status: 'success',
+      message: 'success',
+    });
+  } catch (err) {
+    res.status(200).json({
+      status: 'error',
+      message: err.message,
+    });
+  }
+});
+
+exports.updatePassword = catchAsync(async (req, res, next) => {
+  try {
+    const { password, passwordConfirm } = req.body;
+
+    console.log(password);
+    console.log(passwordConfirm);
+
+    if (password !== passwordConfirm) {
+      return res.status(200).json({ status: 'error', message: 'Password not match' });
+    } else {
+      const hashedPassword = await bcrypt.hash(password, 10);
+      const hashedPasswordConfirm = await bcrypt.hash(passwordConfirm, 10);
+
+      const user = await User.findByIdAndUpdate(
+        req.params.id,
+        { password: hashedPassword, passwordConfirm: hashedPasswordConfirm },
+        {
+          new: true,
+          runValidators: true,
+        }
+      );
+
+      res.status(200).json({
+        status: 'success',
+        message: 'success',
+      });
+    }
+  } catch (err) {
+    console.log(err.message);
+    res.status(200).json({
+      status: 'error',
+      message: err.message,
+    });
+  }
 });
 
 exports.editPassword = catchAsync(async (req, res, next) => {
@@ -243,52 +253,43 @@ exports.editPassword = catchAsync(async (req, res, next) => {
   });
 });
 
-exports.updatePassword = catchAsync(async (req, res, next) => {
-  try {
-    const doc = await User.findByIdAndUpdate(req.params.id, req.body, {
-      new: true,
-      runValidators: true,
-    });
-    if (!doc) {
-      return next(new AppError('No document found with that ID', 404));
-    }
-    const message = 'password updated';
-    res.render('Users/password', {
-      status: 200,
-      title: 'Update password',
-      formData: doc,
-      message: message,
-    });
-  } catch (err) {
-    const doc = await User.findById(req.params.id, req.body, {
-      new: true,
-      runValidators: true,
-    });
-    if (!doc) {
-      // return next(new AppError('No document found with that ID', 404));
-    }
-    res.render('Users/password', {
-      status: 200,
-      title: 'Update password',
-      formData: doc,
-      message: err.message,
-    });
+exports.photoUser = catchAsync(async (req, res, next) => {
+  const user = await User.findById(req.params.id).select('photo');
+
+  if (!user) {
+    return next(new AppError('No document found with that ID', 404));
   }
+
+  res.status(200).json({
+    title: 'Photo user',
+    status: 'success',
+    user,
+  });
 });
 
-exports.photoUser = catchAsync(async (req, res, next) => {
-  let query = await User.findById(req.params.id);
+exports.updatePhotoUser = catchAsync(async (req, res, next) => {
+  if (req.file) {
+    req.body.photo = req.file.filename;
+  }
+  console.log('req.body.photo');
+  console.log(req.body.photo);
+  const doc = await User.findByIdAndUpdate(req.params.id, req.body);
 
-  // if (popOptions) query = query.populate(popOptions);
-  const doc = await query;
   if (!doc) {
     return next(new AppError('No document found with that ID', 404));
   }
-  let message = '';
-  res.render('Users/photo', {
-    status: 200,
+  res.status(200).json({
     title: 'Photo user',
-    formData: doc,
-    message: message,
+    status: 'success',
+    photo: req.file.filename,
   });
+});
+
+exports.deleteUser = catchAsync(async (req, res, next) => {
+  const user = await User.findByIdAndDelete(req.params.id);
+  console.log(user);
+  if (!user) {
+    return next(new AppError('No document found with that ID', 404));
+  }
+  res.redirect('/users?m=2');
 });

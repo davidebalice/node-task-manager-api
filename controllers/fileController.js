@@ -100,7 +100,6 @@ exports.deleteFile = catchAsync(async (req, res, next) => {
   const doc = await File.findByIdAndDelete(req.body.id);
 
   try {
-    console.log(doc.file);
     fs.unlinkSync(`./uploads/tasks/${doc.file}`);
   } catch (err) {
     console.error('Error:', err);
@@ -152,10 +151,6 @@ exports.download = catchAsync(async (req, res, next) => {
   });
 });
 
-/*
-exports.uploadImage = upload.fields([{ name: 'imageCover', maxCount: 1 }]);
-exports.uploadGallery = upload.fields([{ name: 'images', maxCount: 6 }]);
-*/
 
 exports.resizeImage = catchAsync(async (req, res, next) => {
   console.log(req.files.imageCover);
