@@ -11,7 +11,7 @@ router.route('/signup').post(demoMode, bodyParser.raw({ type: 'application/json'
 router.use(authController.protect);
 
 router.patch('/updateMyPassword', authController.updatePassword);
-//router.patch('/updateMe', userController.uploadPhotoUser, userController.resizePhotoUser, userController.updateMe);
+router.patch('/updateMe', userController.uploadPhotoUser, userController.resizePhotoUser, userController.updateMe);
 router.delete('/deleteMe', userController.deleteMe);
 
 router.route('/forgotPassword').post(demoMode, authController.forgotPassword);

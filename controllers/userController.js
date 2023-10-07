@@ -245,12 +245,7 @@ exports.editPassword = catchAsync(async (req, res, next) => {
   if (!doc) {
     return next(new AppError('No document found with that ID', 404));
   }
-  res.render('Users/password', {
-    status: 200,
-    title: 'Edit password',
-    formData: doc,
-    message: '',
-  });
+ 
 });
 
 exports.photoUser = catchAsync(async (req, res, next) => {
@@ -287,9 +282,11 @@ exports.updatePhotoUser = catchAsync(async (req, res, next) => {
 
 exports.deleteUser = catchAsync(async (req, res, next) => {
   const user = await User.findByIdAndDelete(req.params.id);
-  console.log(user);
   if (!user) {
     return next(new AppError('No document found with that ID', 404));
   }
-  res.redirect('/users?m=2');
+  
+  res.status(200).json({
+    status: 'success',
+  });
 });
