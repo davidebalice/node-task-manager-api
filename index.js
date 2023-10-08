@@ -75,15 +75,9 @@ app.use(
   })
 );
 
-const authRouter = require('./routers/authRoutes');
-app.use('/api/', authRouter);
-
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.get('/layouts/', function (req, res) {
-  res.render('view');
-});
-
+const authRouter = require('./routers/authRoutes');
 const projectRouter = require('./routers/projectRoutes');
 const userRouter = require('./routers/userRoutes');
 const clientRouter = require('./routers/clientRoutes');
@@ -92,6 +86,7 @@ const activityRouter = require('./routers/activityRoutes');
 const commentRouter = require('./routers/commentRoutes');
 const fileRouter = require('./routers/fileRoutes');
 
+app.use('/api/', authRouter);
 app.use('/api/', projectRouter);
 app.use('/api/', userRouter);
 app.use('/api/', clientRouter);

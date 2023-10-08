@@ -8,7 +8,7 @@ const urlencodeParser = bodyParser.urlencoded({ extended: false });
 
 router.route('/signup').post(demoMode, bodyParser.raw({ type: 'application/json' }), authController.signup);
 
-router.use(authController.protect);
+//router.use(authController.protect);
 
 router.patch('/updateMyPassword', authController.updatePassword);
 router.patch('/updateMe', userController.uploadPhotoUser, userController.resizePhotoUser, userController.updateMe);
@@ -26,8 +26,6 @@ router
 router
   .route('/user/delete/:id')
   .post(demoMode, authController.protect, authController.restrictTo('admin'), userController.deleteUser);
-
-router.use(authController.restrictTo('admin'));
 
 router.route('/users').get(authController.protect, authController.restrictTo('admin'), userController.getUsers);
 

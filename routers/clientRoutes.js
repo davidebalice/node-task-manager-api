@@ -16,8 +16,6 @@ router
   .route('/client/delete/:id')
   .post(demoMode, authController.protect, authController.restrictTo('admin'), clientController.deleteClient);
 
-router.use(authController.restrictTo('admin'));
-
 router.route('/clients').get(authController.protect, authController.restrictTo('admin'), clientController.getClients);
 
 router

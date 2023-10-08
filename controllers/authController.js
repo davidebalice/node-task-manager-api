@@ -23,12 +23,15 @@ const createSendToken = (user, statusCode, req, res) => {
   if (process.env.NODE_ENV === 'production') cookieOptions.secure = true;
 
   res.cookie('jwt', token, cookieOptions);
-
   user.password = undefined;
+  user.passwordResetExpires = undefined;
+  user.passwordResetToken = undefined;
+  user.passwordChangedAt = undefined;
 
   res.status(statusCode).json({
     status: 'success',
     token,
+    user,
   });
 };
 
@@ -54,9 +57,6 @@ exports.signup = catchAsync(async (req, res, next) => {
 exports.login = catchAsync(async (req, res, next) => {
   const { email, password } = req.body;
 
-  console.log(email);
-  console.log(password);
-
   if (!email || !password) {
     errorLogin(res);
   }
@@ -72,8 +72,7 @@ exports.login = catchAsync(async (req, res, next) => {
   if (!correct) {
     errorLogin(res);
   }
-
-  createSendToken(user, 200, req, res);
+  await createSendToken(user, 200, req, res);
 });
 
 exports.logout = catchAsync(async (req, res, next) => {
@@ -84,7 +83,7 @@ exports.logout = catchAsync(async (req, res, next) => {
 
   res.status(200).json({
     status: 'success',
-    messag: 'successfully logut',
+    messag: 'successfully logout',
   });
 });
 
@@ -99,10 +98,9 @@ exports.protect = catchAsync(async (req, res, next) => {
   }
 
   if (!token || token === undefined) {
-    res.locals = { title: 'Login' };
-    res.render('Auth/auth-login', {
-      message: req.flash('message'),
-      error: req.flash('error'),
+    res.status(400).json({
+      status: 'error',
+      messag: 'error login',
     });
   }
   try {
@@ -119,10 +117,14 @@ exports.protect = catchAsync(async (req, res, next) => {
 
     req.user = currentUser;
     res.locals.user = currentUser;
+    res.locals.token = token;
     next();
   } catch (err) {
     console.error(err);
-    ///return res.redirect('/login');
+    res.status(400).json({
+      status: 'error',
+      messag: 'error login',
+    });
     return next(new AppError('Incorrect email or password', 401));
   }
 });

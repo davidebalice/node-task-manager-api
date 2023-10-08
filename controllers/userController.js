@@ -1,4 +1,6 @@
 const User = require('../models/userModel');
+const { promisify } = require('util');
+const jwt = require('jsonwebtoken');
 const catchAsync = require('../middlewares/catchAsync');
 const mongoose = require('mongoose');
 const factory = require('./handlerFactory');
@@ -49,10 +51,47 @@ const filterObj = (obj, ...allowedFields) => {
   return newObj;
 };
 
-exports.getMe = (req, res, next) => {
-  req.params.id = req.user.id;
+exports.getUserByToken = catchAsync(async (req, res, next) => {
+  if (req.cookies.jwt || res.locals.token) {
+    try {
+      let token = '';
+      if (req.cookies.jwt) {
+        token = req.cookies.jwt;
+      } else {
+        token = res.locals.token;
+      }
+
+      const decoded = await promisify(jwt.verify)(token, process.env.JWT_SECRET);
+
+      const user = await User.findById(decoded.id).select('-passwordChangedAt -passwordResetExpires -createdAt');
+      if (!user) {
+        res.status(400).json({
+          status: 'error',
+          message: 'error',
+        });
+      }
+
+      if (user.changedPasswordAfter(decoded.iat)) {
+        res.status(400).json({
+          status: 'error',
+          message: 'error',
+        });
+      }
+
+      console.log(user);
+
+      res.status(200).json({
+        user,
+      });
+    } catch (err) {
+      res.status(400).json({
+        status: 'error',
+        message: 'error:' + err,
+      });
+    }
+  }
   next();
-};
+});
 
 exports.getUsers = catchAsync(async (req, res, next) => {
   const userId = res.locals.user._id;
@@ -71,7 +110,8 @@ exports.getUsers = catchAsync(async (req, res, next) => {
     filterData.$or = [{ owner: userId }, { 'members.user': userId }];
   }
 */
-  const setLimit = 12;
+
+  const setLimit = 10;
   const limit = req.query.limit * 1 || setLimit;
   const page = req.query.page * 1 || 1;
   const skip = (page - 1) * limit;
@@ -245,7 +285,6 @@ exports.editPassword = catchAsync(async (req, res, next) => {
   if (!doc) {
     return next(new AppError('No document found with that ID', 404));
   }
- 
 });
 
 exports.photoUser = catchAsync(async (req, res, next) => {
@@ -285,7 +324,7 @@ exports.deleteUser = catchAsync(async (req, res, next) => {
   if (!user) {
     return next(new AppError('No document found with that ID', 404));
   }
-  
+
   res.status(200).json({
     status: 'success',
   });

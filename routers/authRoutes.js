@@ -6,17 +6,8 @@ const bodyParser = require('body-parser');
 const demoMode = require('../middlewares/demo_mode');
 const urlencodeParser = bodyParser.urlencoded({ extended: false });
 
-router
-  .route('/login')
-  .get(function (req, res) {
-    res.locals = { title: 'Login' };
-    res.render('Auth/auth-login', {
-      message: req.flash('message'),
-      error: req.flash('error'),
-    });
-  })
-  .post(urlencodeParser, authController.login);
-
+router.route('/login').post(urlencodeParser, authController.login);
 router.route('/logout').get(authController.logout);
+router.route('/get/user').post(authController.protect, userController.getUserByToken);
 
 module.exports = router;
