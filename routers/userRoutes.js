@@ -10,9 +10,19 @@ router.route('/signup').post(demoMode, bodyParser.raw({ type: 'application/json'
 
 //router.use(authController.protect);
 
-router.patch('/updateMyPassword', authController.updatePassword);
-router.patch('/updateMe', userController.uploadPhotoUser, userController.resizePhotoUser, userController.updateMe);
-router.delete('/deleteMe', userController.deleteMe);
+router.route('/profile').get(demoMode, authController.protect, userController.getUserByToken);
+router.route('/profile/update').post(demoMode, authController.protect, userController.profileUpdate);
+router.route('/profile/password').post(demoMode, authController.protect, userController.profilePassword);
+router
+  .route('/profile/photo')
+  .post(
+    demoMode,
+    authController.protect,
+    authController.restrictTo('admin'),
+    userController.uploadPhotoUser,
+    userController.resizePhotoUser,
+    userController.updatePhotoUser
+  );
 
 router.route('/forgotPassword').post(demoMode, authController.forgotPassword);
 router.route('/resetPassword/:token').patch(demoMode, authController.resetPassword);

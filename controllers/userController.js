@@ -78,8 +78,6 @@ exports.getUserByToken = catchAsync(async (req, res, next) => {
         });
       }
 
-      console.log(user);
-
       res.status(200).json({
         user,
       });
@@ -125,36 +123,6 @@ exports.getUsers = catchAsync(async (req, res, next) => {
     page,
     limit,
     totalPages,
-  });
-});
-
-exports.updateMe = catchAsync(async (req, res, next) => {
-  if (req.body.password || req.body.passwordConfirm) {
-    return next(new AppError('This route is not for password updates. Please use /updateMyPassword.', 400));
-  }
-
-  const filteredBody = filterObj(req.body, 'surname', 'name', 'email');
-  if (req.file) filteredBody.photo = req.file.filename;
-
-  const updatedUser = await User.findByIdAndUpdate(req.user.id, filteredBody, {
-    new: true,
-    runValidators: true,
-  });
-
-  res.status(200).json({
-    status: 'success',
-    data: {
-      user: updatedUser,
-    },
-  });
-});
-
-exports.deleteMe = catchAsync(async (req, res, next) => {
-  await User.findByIdAndUpdate(req.user.id, { active: false });
-
-  res.status(204).json({
-    status: 'success',
-    data: null,
   });
 });
 
@@ -329,3 +297,135 @@ exports.deleteUser = catchAsync(async (req, res, next) => {
     status: 'success',
   });
 });
+
+exports.profileUpdate = catchAsync(async (req, res, next) => {
+  if (req.cookies.jwt || res.locals.token) {
+    try {
+      let token = '';
+      if (req.cookies.jwt) {
+        token = req.cookies.jwt;
+      } else {
+        token = res.locals.token;
+      }
+
+      const decoded = await promisify(jwt.verify)(token, process.env.JWT_SECRET);
+
+      const updatedUser = await User.findByIdAndUpdate(decoded.id, req.body, {
+        new: true,
+        runValidators: true,
+      }).select('-passwordChangedAt -passwordResetExpires -createdAt');
+
+      res.status(200).json({
+        status: 'success',
+        user: updatedUser,
+      });
+    } catch (err) {
+      res.status(400).json({
+        status: 'error',
+        message: 'error:' + err,
+      });
+    }
+  }
+});
+
+exports.profilePassword = catchAsync(async (req, res, next) => {
+  if (req.cookies.jwt || res.locals.token) {
+    try {
+      let token = '';
+      if (req.cookies.jwt) {
+        token = req.cookies.jwt;
+      } else {
+        token = res.locals.token;
+      }
+      const decoded = await promisify(jwt.verify)(token, process.env.JWT_SECRET);
+      const { password, passwordConfirm } = req.body;
+
+      if (password !== passwordConfirm) {
+        return res.status(200).json({ status: 'error', message: 'Password not match' });
+      } else {
+        const hashedPassword = await bcrypt.hash(password, 10);
+        const hashedPasswordConfirm = await bcrypt.hash(passwordConfirm, 10);
+
+        const user = await User.findByIdAndUpdate(
+          decoded.id,
+          { password: hashedPassword, passwordConfirm: hashedPasswordConfirm },
+          {
+            new: true,
+            runValidators: true,
+          }
+        );
+
+        res.status(200).json({
+          status: 'success',
+          message: 'success',
+        });
+      }
+    } catch (err) {
+      console.log(err.message);
+      res.status(200).json({
+        status: 'error',
+        message: err.message,
+      });
+    }
+  }
+});
+
+exports.updatePhotoUser = catchAsync(async (req, res, next) => {
+  if (req.cookies.jwt || res.locals.token) {
+    try {
+      let token = '';
+      if (req.cookies.jwt) {
+        token = req.cookies.jwt;
+      } else {
+        token = res.locals.token;
+      }
+      const decoded = await promisify(jwt.verify)(token, process.env.JWT_SECRET);
+      const { password, passwordConfirm } = req.body;
+
+      if (req.file) {
+        req.body.photo = req.file.filename;
+      }
+
+      const user = await User.findByIdAndUpdate(
+        decoded.id,
+        { photo: req.body.photo },
+        {
+          new: true,
+          runValidators: true,
+        }
+      );
+
+      res.status(200).json({
+        status: 'success',
+        message: 'success',
+        photo: req.body.photo,
+      });
+    } catch (err) {
+      console.log(err.message);
+      res.status(200).json({
+        status: 'error',
+        message: err.message,
+      });
+    }
+  }
+});
+
+/*
+exports.updatePhotoUser = catchAsync(async (req, res, next) => {
+  if (req.file) {
+    req.body.photo = req.file.filename;
+  }
+
+  const doc = await User.findByIdAndUpdate(req.params.id, req.body);
+
+  if (!doc) {
+    return next(new AppError('No document found with that ID', 404));
+  }
+  res.status(200).json({
+    title: 'Photo user',
+    status: 'success',
+    photo: req.file.filename,
+  });
+});
+
+*/
