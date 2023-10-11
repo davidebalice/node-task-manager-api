@@ -6,12 +6,11 @@ const mongoose = require('mongoose');
 const factory = require('./handlerFactory');
 const AppError = require('../middlewares/error');
 const multer = require('multer');
+const multerStorage = multer.memoryStorage();
 const sharp = require('sharp');
-
 const path = require('path');
 const bcrypt = require('bcrypt');
 
-const multerStorage = multer.memoryStorage();
 const multerFilter = (req, file, cb) => {
   if (file.mimetype.startsWith('image')) {
     cb(null, true);
@@ -409,23 +408,3 @@ exports.updatePhotoUser = catchAsync(async (req, res, next) => {
     }
   }
 });
-
-/*
-exports.updatePhotoUser = catchAsync(async (req, res, next) => {
-  if (req.file) {
-    req.body.photo = req.file.filename;
-  }
-
-  const doc = await User.findByIdAndUpdate(req.params.id, req.body);
-
-  if (!doc) {
-    return next(new AppError('No document found with that ID', 404));
-  }
-  res.status(200).json({
-    title: 'Photo user',
-    status: 'success',
-    photo: req.file.filename,
-  });
-});
-
-*/

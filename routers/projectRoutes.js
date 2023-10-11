@@ -33,7 +33,6 @@ router.route('/remove/member/project/').post(demoMode, authController.protect, p
 
 router
   .route('/project/photo/:id')
-  .get(projectController.photoProject)
   .post(
     demoMode,
     authController.protect,
@@ -65,5 +64,9 @@ router
 router
   .route('/active/project/:id')
   .post(demoMode, authController.protect, authController.restrictTo('admin'), projectController.activeProject);
+
+router
+  .route('/project/cover/:filename')
+  .get(authController.protect, authController.restrictTo('admin'), projectController.cover);
 
 module.exports = router;

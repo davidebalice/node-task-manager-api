@@ -5,6 +5,7 @@ const sharp = require('sharp');
 const Project = require('../models/projectModel');
 const Task = require('../models/taskModel');
 const Client = require('../models/clientModel');
+const Activity = require('../models/activityModel');
 const User = require('../models/userModel');
 const ApiQuery = require('../middlewares/apiquery');
 const AppError = require('../middlewares/error');
@@ -28,23 +29,44 @@ const upload = multer({
   fileFilter: multerFilter,
 });
 
-exports.uploadImage = upload.fields([{ name: 'imageCover', maxCount: 1 }]);
+exports.uploadImage = upload.single('imageCover');
 exports.uploadGallery = upload.fields([{ name: 'images', maxCount: 6 }]);
 
 exports.resizeImage = catchAsync(async (req, res, next) => {
-  console.log(req.files.imageCover);
-  if (!req.files.imageCover) return next();
+  console.log('req.file');
+  console.log(req.file);
+  console.log('req.file.filename');
+  console.log(req.file.filename);
 
-  req.body.imageCover = `project-${req.params.id}-${Date.now()}-cover.jpeg`;
+  if (!req.file) return next();
 
-  await sharp(req.files.imageCover[0].buffer)
+  req.body.filename = `project-${req.params.id}-${Date.now()}-cover.jpeg`;
+
+  await sharp(req.file.buffer)
     .resize(2000, 1333)
     .toFormat('jpeg')
     .jpeg({ quality: 90 })
-    .toFile(`public/img/projects/${req.body.imageCover}`);
+    .toFile(`${process.env.FILE_PATH}/uploads/projects/${req.body.filename}`);
+  next();
+});
+
+/*
+exports.resizePhotoUser = catchAsync(async (req, res, next) => {
+  console.log(req.file);
+  if (!req.file) return next();
+  req.file.filename = `user-${req.user.id}-${Date.now()}.jpeg`;
+  console.log('req.file.filename');
+  console.log(req.file.filename);
+  console.log(`${process.env.FILE_PATH}/uploads/users/${req.file.filename}`);
+  await sharp(req.file.buffer)
+    .resize(500, 500)
+    .toFormat('jpeg')
+    .jpeg({ quality: 90 })
+    .toFile(`${process.env.FILE_PATH}/uploads/users/${req.file.filename}`);
 
   next();
 });
+*/
 
 exports.resizeGallery = catchAsync(async (req, res, next) => {
   if (!req.files.images) return next();
@@ -84,12 +106,118 @@ exports.getProjects = catchAsync(async (req, res, next) => {
   const limit = req.query.limit * 1 || setLimit;
   const page = req.query.page * 1 || 1;
   const skip = (page - 1) * limit;
-  const projects = await Project.find(filterData).sort('-createdAt').skip(skip).limit(limit);
+
+  const projects = await Project.aggregate(
+    [
+      {
+        $match: filterData,
+      },
+      {
+        $sort: { createdAt: -1 },
+      },
+      {
+        $skip: skip,
+      },
+      {
+        $limit: limit,
+      },
+      {
+        $lookup: {
+          from: 'tasks',
+          localField: '_id',
+          foreignField: 'project_id',
+          as: 'tasks',
+        },
+      },
+      {
+        $lookup: {
+          from: 'users',
+          localField: 'owner',
+          foreignField: '_id',
+          as: 'owner',
+        },
+      },
+      {
+        $lookup: {
+          from: 'users',
+          localField: 'members',
+          foreignField: '_id',
+          as: 'members',
+        },
+      },
+      {
+        $lookup: {
+          from: 'activities',
+          let: { projectId: '$_id' },
+          pipeline: [
+            {
+              $match: {
+                $expr: { $eq: ['$project_id', '$$projectId'] },
+              },
+            },
+            {
+              $sort: { lastUpdate: -1 },
+            },
+            {
+              $limit: 1,
+            },
+          ],
+          as: 'latestActivity',
+        },
+      },
+      {
+        $unwind: {
+          path: '$latestActivity',
+          preserveNullAndEmptyArrays: true,
+        },
+      },
+      {
+        $addFields: {
+          numTasks: { $size: '$tasks' },
+          numMembers: { $size: '$members' },
+        },
+      },
+      {
+        $project: {
+          _id: 1,
+          name: 1,
+          createdAt: 1,
+          numTasks: 1,
+          numMembers: 1,
+          imageCover: 1,
+          owner: {
+            _id: 1,
+            name: 1,
+            surname: 1,
+            photo: 1,
+          },
+          members: {
+            _id: 1,
+            name: 1,
+            surname: 1,
+            photo: 1,
+          },
+          lastUpdate: { $ifNull: ['$latestActivity.lastUpdate', new Date(0)] },
+        },
+      },
+    ],
+    {
+      debug: true,
+    }
+  );
+
   const count = await Project.countDocuments();
   const totalPages = Math.ceil(count / limit);
 
   const formattedProjects = projects.map((project) => ({
-    ...project._doc,
+    _id: project._id,
+    name: project.name,
+    owner: project.owner,
+    members: project.members,
+    numTasks: project.numTasks,
+    numMembers: project.numMembers,
+    imageCover: project.imageCover,
+    lastUpdate: format(new Date(project.lastUpdate), 'dd/MM/yyyy HH:mm'),
     formattedDate: format(new Date(project.createdAt), 'dd/MM/yyyy'),
   }));
 
@@ -360,4 +488,27 @@ exports.activeProject = catchAsync(async (req, res, next) => {
   if (!doc) {
     return next(new AppError('No document found with that ID', 404));
   }
+});
+
+exports.updatePhoto = catchAsync(async (req, res, next) => {
+  if (req.file) {
+    req.body.imageCover = req.body.filename;
+  }
+
+  const doc = await Project.findByIdAndUpdate(req.params.id, req.body);
+
+  if (!doc) {
+    return next(new AppError('No document found with that ID', 404));
+  }
+  res.status(200).json({
+    title: 'Photo project',
+    status: 'success',
+    imageCover: req.body.imageCover,
+  });
+});
+
+exports.cover = catchAsync(async (req, res, next) => {
+  const filename = req.params.filename;
+  const filePath = path.join(process.env.FILE_PATH, 'uploads/projects', filename);
+  res.sendFile(filePath);
 });
