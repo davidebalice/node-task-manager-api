@@ -79,6 +79,11 @@ projectSchema.pre('findOne', function (next) {
   next();
 });
 
+projectSchema.pre('find', function (next) {
+  this.populate('client', 'email');
+  next();
+});
+
 projectSchema.post('save', (doc, next) => {
   next();
 });

@@ -33,13 +33,7 @@ exports.uploadImage = upload.single('imageCover');
 exports.uploadGallery = upload.fields([{ name: 'images', maxCount: 6 }]);
 
 exports.resizeImage = catchAsync(async (req, res, next) => {
-  console.log('req.file');
-  console.log(req.file);
-  console.log('req.file.filename');
-  console.log(req.file.filename);
-
   if (!req.file) return next();
-
   req.body.filename = `project-${req.params.id}-${Date.now()}-cover.jpeg`;
 
   await sharp(req.file.buffer)
@@ -49,24 +43,6 @@ exports.resizeImage = catchAsync(async (req, res, next) => {
     .toFile(`${process.env.FILE_PATH}/uploads/projects/${req.body.filename}`);
   next();
 });
-
-/*
-exports.resizePhotoUser = catchAsync(async (req, res, next) => {
-  console.log(req.file);
-  if (!req.file) return next();
-  req.file.filename = `user-${req.user.id}-${Date.now()}.jpeg`;
-  console.log('req.file.filename');
-  console.log(req.file.filename);
-  console.log(`${process.env.FILE_PATH}/uploads/users/${req.file.filename}`);
-  await sharp(req.file.buffer)
-    .resize(500, 500)
-    .toFormat('jpeg')
-    .jpeg({ quality: 90 })
-    .toFile(`${process.env.FILE_PATH}/uploads/users/${req.file.filename}`);
-
-  next();
-});
-*/
 
 exports.resizeGallery = catchAsync(async (req, res, next) => {
   if (!req.files.images) return next();

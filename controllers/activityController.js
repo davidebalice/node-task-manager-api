@@ -52,6 +52,9 @@ exports.updateStatus = catchAsync(async (req, res, next) => {
     }
 
     activity.status = checked ? 'Done' : 'In progress';
+    activity.lastUpdate = new Date();
+    activity.lastUpdateUser = res.locals.user._id;
+    
     try {
       await activity.save();
     } catch (error) {
@@ -75,6 +78,8 @@ exports.createActivity = catchAsync(async (req, res, next) => {
   try {
     req.body._id = new mongoose.Types.ObjectId();
     req.body.owner = res.locals.user._id;
+    req.body.lastUpdateUser = res.locals.user._id;
+    req.body.lastUpdate = new Date();
     await Activity.create(req.body);
 
     await getActivityData(res, req.body.task_id, 'Activity created', 'success');
@@ -84,7 +89,6 @@ exports.createActivity = catchAsync(async (req, res, next) => {
 });
 
 exports.deleteActivity = catchAsync(async (req, res, next) => {
-  console.log(req.body.id);
   const doc = await Activity.findByIdAndDelete(req.body.id);
   await getActivityData(res, req.body.task_id, 'Activity deleted', 'success');
   if (!doc) {
@@ -97,9 +101,6 @@ exports.updateActivity = catchAsync(async (req, res, next) => {
     const activityId = req.body.id;
     const name = req.body.name;
 
-    console.log(activityId);
-    console.log(name);
-
     const activity = await Activity.findOne({ _id: activityId });
 
     if (!activity) {
@@ -109,6 +110,8 @@ exports.updateActivity = catchAsync(async (req, res, next) => {
     }
 
     activity.name = name;
+    activity.lastUpdate = new Date();
+    activity.lastUpdateUser = res.locals.user._id;
     try {
       await activity.save();
     } catch (error) {
@@ -120,59 +123,3 @@ exports.updateActivity = catchAsync(async (req, res, next) => {
     await getActivityData(res, activity.task_id, 'Activity error', 'error');
   }
 });
-
-/*
-exports.getTask = factory.getOne(Task);
-
-exports.editTask = catchAsync(async (req, res, next) => {
-  let query = await Task.findById(req.params.id)
-    .populate({
-      path: 'project_id',
-      select: 'name _id',
-    })
-    .populate({
-      path: 'user_id',
-      select: 'name surname _id',
-    });
-
-  const doc = await query;
-
-  if (!doc) {
-    return next(new AppError('No document found with that ID', 404));
-  }
-
-  const formattedDate = moment(doc.createdAt).format('DD/MM/YYYY HH:mm');
-  doc.user_id.name = doc.user_id.name.charAt(0).toUpperCase() + doc.user_id.name.slice(1).toLowerCase();
-  doc.user_id.surname = doc.user_id.surname.charAt(0).toUpperCase() + doc.user_id.surname.slice(1).toLowerCase();
-
-  let message = '';
-  res.render('Tasks/edit', {
-    status: 200,
-    title: 'Edit task',
-    formData: {
-      ...doc.toObject(),
-      createdAt: formattedDate,
-    },
-    message: message,
-  });
-});
-
-exports.updateTask = catchAsync(async (req, res, next) => {
-  const doc = await Task.findByIdAndUpdate(req.params.id, req.body, {
-    new: true,
-    runValidators: true,
-  });
-  if (!doc) {
-    return next(new AppError('No document found with that ID', 404));
-  }
-  res.redirect(doc._id);
-});
-
-exports.deleteTask = catchAsync(async (req, res, next) => {
-  const doc = await Task.findByIdAndDelete(req.params.id);
-  if (!doc) {
-    return next(new AppError('No document found with that ID', 404));
-  }
-  res.redirect('/tasks?m=2');
-});
-*/

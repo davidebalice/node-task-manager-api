@@ -58,12 +58,22 @@ activitySchema.index({ owner: 1 });
 activitySchema.index({ task_id: 1 });
 
 activitySchema.pre('find', function (next) {
-  this.populate('owner', 'name surname email role');
+  this.populate('owner', 'name surname email role photo');
   next();
 });
 
 activitySchema.pre('findOne', function (next) {
-  this.populate('owner', 'name surname email role');
+  this.populate('owner', 'name surname email role photo');
+  next();
+});
+
+activitySchema.pre('find', function (next) {
+  this.populate('lastUpdateUser', 'name surname email role photo');
+  next();
+});
+
+activitySchema.pre('findOne', function (next) {
+  this.populate('lastUpdateUser', 'name surname email role');
   next();
 });
 
