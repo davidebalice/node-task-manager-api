@@ -61,8 +61,9 @@ exports.getUserByToken = catchAsync(async (req, res, next) => {
       }
 
       const decoded = await promisify(jwt.verify)(token, process.env.JWT_SECRET);
+      const user = await User.findById(decoded.id).select('-passwordChangedAt -passwordResetExpires -createdAt -passwordResetToken -passwordConfirm');
 
-      const user = await User.findById(decoded.id).select('-passwordChangedAt -passwordResetExpires -createdAt');
+      console.log(user);
       if (!user) {
         res.status(400).json({
           status: 'error',

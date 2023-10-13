@@ -1,18 +1,12 @@
 const mongoose = require('mongoose');
 const moment = require('moment');
-const sharp = require('sharp');
 const Task = require('../models/taskModel');
 const Comment = require('../models/commentModel');
 const File = require('../models/fileModel');
 const Activity = require('../models/activityModel');
 const Project = require('../models/projectModel');
-const factory = require('./handlerFactory');
 const AppError = require('../middlewares/error');
 const catchAsync = require('../middlewares/catchAsync');
-const ApiQuery = require('../middlewares/apiquery');
-const fs = require('fs');
-const path = require('path');
-const { ObjectId } = require('mongodb');
 
 exports.setProjectUserIds = (req, res, next) => {
   if (!req.body.project) req.body.project_id = req.params.projectId;
@@ -21,7 +15,10 @@ exports.setProjectUserIds = (req, res, next) => {
 };
 
 exports.getAllTasks = catchAsync(async (req, res, next) => {
-  let filterData = { project_id: req.params.id };
+  let filterData = {
+    project_id: new mongoose.Types.ObjectId(req.params.id),
+  };
+  console.log(req.params.id);
   if (req.query.key) {
     const regex = new RegExp(req.query.key, 'i');
     filterData = { project_id: req.params.id, name: { $regex: regex } };
@@ -29,12 +26,53 @@ exports.getAllTasks = catchAsync(async (req, res, next) => {
   const page = req.query.page * 1 || 1;
   const limit = req.query.limit * 1 || 10;
   const skip = (page - 1) * limit;
-  const tasks = await Task.find(filterData).sort('-createdAt').skip(skip).limit(limit);
+
+  const tasks = await Task.aggregate(
+    [
+      {
+        $match: filterData,
+      },
+      {
+        $sort: { createdAt: -1 },
+      },
+      {
+        $skip: skip,
+      },
+      {
+        $limit: limit,
+      },
+      {
+        $lookup: {
+          from: 'activities',
+          let: { task_id: '$_id' },
+          pipeline: [
+            {
+              $match: {
+                $expr: { $eq: ['$task_id', '$$task_id'] },
+              },
+            },
+            {
+              $project: {
+                _id: 1,
+                name: 1,
+                status: 1,
+                lastUpdate: 1,
+              },
+            },
+          ],
+          as: 'activities',
+        },
+      },
+    ],
+    {
+      debug: true,
+    }
+  );
 
   const formattedTasks = tasks.map((task) => {
     const formattedDate = moment(task.createdAt).format('DD/MM/YYYY');
     const formattedDeadline = moment(task.deadline).format('DD/MM/YYYY');
-    return { ...task._doc, formattedDate, formattedDeadline };
+    return { ...task, formattedDate, formattedDeadline };
   });
 
   const count = await Task.countDocuments();

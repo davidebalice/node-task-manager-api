@@ -185,17 +185,11 @@ exports.getProjects = catchAsync(async (req, res, next) => {
   const count = await Project.countDocuments();
   const totalPages = Math.ceil(count / limit);
 
-  const formattedProjects = projects.map((project) => ({
-    _id: project._id,
-    name: project.name,
-    owner: project.owner,
-    members: project.members,
-    numTasks: project.numTasks,
-    numMembers: project.numMembers,
-    imageCover: project.imageCover,
-    lastUpdate: format(new Date(project.lastUpdate), 'dd/MM/yyyy HH:mm'),
-    formattedDate: format(new Date(project.createdAt), 'dd/MM/yyyy'),
-  }));
+  const formattedProjects = projects.map((project) => {
+    const lastUpdate = format(new Date(project.lastUpdate), 'dd/MM/yyyy HH:mm');
+    const formattedDate = format(new Date(project.createdAt), 'dd/MM/yyyy');
+    return { ...project, formattedDate, lastUpdate };
+  });
 
   let message = '';
   if (req.query.m) {
@@ -266,6 +260,8 @@ exports.getProject = catchAsync(async (req, res, next) => {
   }
 
   const tasks = await Task.find({ project_id: req.params.id }).sort({ createdAt: 1 });
+
+  console.log(tasks);
 
   res.status(200).json({
     title: 'Project',
