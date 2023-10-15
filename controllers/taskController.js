@@ -103,7 +103,9 @@ exports.getTask = catchAsync(async (req, res, next) => {
     const activities = await Activity.find(filterData).sort('-createdAt');
     const comments = await Comment.find(filterData).sort('-createdAt');
     const files = await File.find(filterData).sort('-createdAt');
-    const task = await Task.findOne({ _id: req.params.id }).populate('project_id');
+    const task = await Task.findOne({ _id: req.params.id })
+      .populate('project_id')
+      .populate('owner', 'name surname photo');
 
     const formattedActivity = activities.map((activity) => {
       const formattedDate = moment(activity.createdAt).format('DD/MM/YYYY');

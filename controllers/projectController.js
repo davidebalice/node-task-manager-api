@@ -1,5 +1,6 @@
 const multer = require('multer');
 const multerStorage = multer.memoryStorage();
+const moment = require('moment');
 const mongoose = require('mongoose');
 const sharp = require('sharp');
 const Project = require('../models/projectModel');
@@ -253,7 +254,14 @@ exports.deleteProject = catchAsync(async (req, res, next) => {
 });
 
 exports.getProject = catchAsync(async (req, res, next) => {
-  const project = await Project.findById(req.params.id);
+  const project = await Project.findById(req.params.id).populate('owner', 'name surname photo');
+
+  const activity = await Activity.findOne({ project_id: project.id }).sort('-lastUpdate');
+
+  if (activity) {
+    const formattedLastUpdate = moment(activity.lastUpdate).format('DD/MM/YYYY HH:mm');
+    project.lastUpdate = formattedLastUpdate;
+  }
 
   if (!project) {
     return next(new AppError('No document found with that ID', 404));
@@ -261,7 +269,9 @@ exports.getProject = catchAsync(async (req, res, next) => {
 
   const tasks = await Task.find({ project_id: req.params.id }).sort({ createdAt: 1 });
 
-  console.log(tasks);
+  //console.log(tasks);
+
+  console.log(project);
 
   res.status(200).json({
     title: 'Project',

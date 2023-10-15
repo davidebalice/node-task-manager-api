@@ -86,6 +86,7 @@ const taskRouter = require('./routers/taskRoutes');
 const activityRouter = require('./routers/activityRoutes');
 const commentRouter = require('./routers/commentRoutes');
 const fileRouter = require('./routers/fileRoutes');
+const screenshotRouter = require('./routers/screenshotRoutes');
 
 app.use('/api/', authRouter);
 app.use('/api/', dashboardRouter);
@@ -96,6 +97,7 @@ app.use('/api/', taskRouter);
 app.use('/api/', activityRouter);
 app.use('/api/', commentRouter);
 app.use('/api/', fileRouter);
+app.use('/api/', screenshotRouter);
 
 http.listen(8000, function () {
   console.log('listening on *:8000');

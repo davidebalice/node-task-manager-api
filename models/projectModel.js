@@ -29,6 +29,10 @@ const projectSchema = new mongoose.Schema(
       type: Date,
       default: Date.now(),
     },
+    lastUpdate: {
+      type: Date,
+      default: null,
+    },
     owner: {
       type: mongoose.Schema.ObjectId,
       ref: 'User',
