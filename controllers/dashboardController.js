@@ -23,3 +23,9 @@ exports.dashboard = catchAsync(async (req, res, next) => {
     activities,
   });
 });
+
+exports.getDemoMode = catchAsync(async (req, res, next) => {
+  res.status(200).json({
+    demo: global.demo,
+  });
+});

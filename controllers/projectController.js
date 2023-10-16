@@ -295,17 +295,24 @@ exports.editProject = catchAsync(async (req, res, next) => {
 });
 
 exports.updateProject = catchAsync(async (req, res, next) => {
-  const doc = await Project.findByIdAndUpdate(req.params.id, req.body, {
-    new: true,
-    runValidators: true,
-  });
-  if (!doc) {
-    return next(new AppError('No document found with that ID', 404));
+  if (global.demo) {
+    res.status(200).json({
+      title: 'Demo mode',
+      status: 'demo',
+    });
+  } else {
+    const doc = await Project.findByIdAndUpdate(req.params.id, req.body, {
+      new: true,
+      runValidators: true,
+    });
+    if (!doc) {
+      return next(new AppError('No document found with that ID', 404));
+    }
+    res.status(200).json({
+      title: 'Update project',
+      status: 'success',
+    });
   }
-  res.status(200).json({
-    title: 'Update project',
-    create: 'success',
-  });
 });
 
 exports.membersProject = catchAsync(async (req, res, next) => {
@@ -492,5 +499,10 @@ exports.updatePhoto = catchAsync(async (req, res, next) => {
 exports.cover = catchAsync(async (req, res, next) => {
   const filename = req.params.filename;
   const filePath = path.join(process.env.FILE_PATH, 'uploads/projects', filename);
-  res.sendFile(filePath);
+  res.sendFile(filePath, (err) => {
+    if (err) {
+      console.log(err);
+      return next(err);
+    }
+  });
 });

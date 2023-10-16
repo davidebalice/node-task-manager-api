@@ -15,18 +15,33 @@ const signToken = (id) =>
 
 const createSendToken = (user, statusCode, req, res) => {
   const token = signToken(user._id);
-
+  global.token = token;
+  
   const cookieOptions = {
     expires: new Date(Date.now() + process.env.JWT_COOKIE_EXPIRES_IN * 24 * 60 * 60 * 1000),
     httpOnly: true,
   };
-  if (process.env.NODE_ENV === 'production') cookieOptions.secure = true;
+  
+  if (process.env.NODE_ENV === 'production') cookieOptions.secure = false;
 
   res.cookie('jwt', token, cookieOptions);
+
+  async function updateToken(id, token) {
+    try {
+      const user = await User.findByIdAndUpdate(id, { token }).exec();
+    } catch (error) {
+      console.error('Errore during save token', error);
+    }
+  }
+
   user.password = undefined;
   user.passwordResetExpires = undefined;
   user.passwordResetToken = undefined;
   user.passwordChangedAt = undefined;
+
+  updateToken(user._id, token);
+
+  res.locals.user = user;
 
   res.status(statusCode).json({
     status: 'success',
@@ -40,6 +55,20 @@ const errorLogin = (res) =>
     status: 'error',
     message: 'Incorrect username and password',
   });
+
+async function getTokenDb(userId) {
+    try {
+      const user = await User.findById(userId).select('+token');
+      if (user) {
+       return user.token;
+      } else {
+        console.log('Error token');
+      }
+    } catch (error) {
+      console.log('Error token');
+    }
+  }
+  
 
 exports.signup = catchAsync(async (req, res, next) => {
   const newUser = await User.create({
@@ -80,7 +109,8 @@ exports.logout = catchAsync(async (req, res, next) => {
     expires: new Date(Date.now() + 10 * 1000),
     httpOnly: true,
   });
-
+  res.clearCookie('jwt');
+  res.clearCookie('token');
   res.status(200).json({
     status: 'success',
     messag: 'successfully logout',
@@ -92,8 +122,14 @@ exports.protect = catchAsync(async (req, res, next) => {
   if (req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {
     token = req.headers.authorization.split(' ')[1];
   } else {
-    if (req.cookies.jwt) {
-      token = req.cookies.jwt;
+
+    if(global.token){
+      token=global.token;
+    }
+    else{
+      if (req.cookies.jwt) {
+        token = req.cookies.jwt;
+      }
     }
   }
 
@@ -105,7 +141,6 @@ exports.protect = catchAsync(async (req, res, next) => {
   }
   try {
     const decoded = await promisify(jwt.verify)(token, process.env.JWT_SECRET);
-
     const currentUser = await User.findById(decoded.id);
     if (!currentUser) {
       return next(new AppError('The token area expired, please login.', 401));
@@ -120,6 +155,7 @@ exports.protect = catchAsync(async (req, res, next) => {
     res.locals.token = token;
     next();
   } catch (err) {
+    console.log('err');
     console.error(err);
     res.status(400).json({
       status: 'error',

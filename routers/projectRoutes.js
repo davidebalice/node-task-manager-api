@@ -6,7 +6,6 @@ const demoMode = require('../middlewares/demo_mode');
 const User = require('../models/userModel');
 
 router.route('/').get(authController.protect, async function (req, res) {
-  res.locals = { title: 'Dashboard' };
   const users = await User.find().limit(6);
   res.render('Dashboard/index', { users: users });
 });
@@ -67,6 +66,6 @@ router
 
 router
   .route('/project/cover/:filename')
-  .get(authController.protect, authController.restrictTo('admin'), projectController.cover);
+  .get(authController.protect, projectController.cover);
 
 module.exports = router;

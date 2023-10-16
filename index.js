@@ -10,6 +10,8 @@ dotenv.config({ path: './config.env' });
 const DB = process.env.DATABASE;
 const cors = require('cors');
 
+global.token = '';
+
 app.use(
   cors({
     origin: 'http://localhost:3000',
@@ -46,6 +48,7 @@ var flash = require('connect-flash');
 var i18n = require('i18n-express');
 
 app.use(cookieParser());
+
 app.use(
   bodyParser.urlencoded({
     extended: true,
@@ -55,8 +58,16 @@ app.use(bodyParser.json());
 
 app.use(
   session({
-    key: 'user_sid',
-    secret: 'somerandonstuffs',
+    secret: 'secretkey',
+    resave: false,
+    saveUninitialized: true,
+  })
+);
+/*
+app.use(
+  session({
+    name: 'user_sid',
+    secret: 'secretkey',
     resave: false,
     saveUninitialized: false,
     cookie: {
@@ -64,8 +75,7 @@ app.use(
     },
   })
 );
-app.use(session({ resave: false, saveUninitialized: true, secret: 'nodedemo' }));
-
+*/
 app.use(flash());
 app.use(
   i18n({

@@ -63,6 +63,10 @@ const userSchema = new mongoose.Schema({
     type: Date,
     default: Date.now,
   },
+  token: {
+    type: String,
+    select: false,
+  },
 });
 
 userSchema.pre('save', async function (next) {
