@@ -182,3 +182,9 @@ exports.resizeGallery = catchAsync(async (req, res, next) => {
   );
   next();
 });
+
+exports.screenshotImg = catchAsync(async (req, res, next) => {
+  const filename = req.params.filename;
+  const filePath = path.join(process.env.FILE_PATH, 'uploads/screenshots', filename);
+  res.sendFile(filePath);
+});

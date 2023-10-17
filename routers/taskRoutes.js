@@ -8,7 +8,7 @@ router.use(authController.protect);
 
 router.route('/tasks/:id').get(authController.protect, authController.restrictTo('admin'), taskController.getAllTasks);
 
-router.route('/task/:id').get(authController.protect, authController.restrictTo('admin'), taskController.getTask);
+router.route('/task/:id').get(demoMode, authController.protect, authController.restrictTo('admin'), taskController.getTask);
 
 router
   .route('/add/task')

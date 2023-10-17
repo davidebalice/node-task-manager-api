@@ -3,6 +3,7 @@ const moment = require('moment');
 const Task = require('../models/taskModel');
 const Comment = require('../models/commentModel');
 const File = require('../models/fileModel');
+const Screenshot = require('../models/screenshotModel');
 const Activity = require('../models/activityModel');
 const Project = require('../models/projectModel');
 const AppError = require('../middlewares/error');
@@ -103,6 +104,7 @@ exports.getTask = catchAsync(async (req, res, next) => {
     const activities = await Activity.find(filterData).sort('-createdAt');
     const comments = await Comment.find(filterData).sort('-createdAt');
     const files = await File.find(filterData).sort('-createdAt');
+    const screenshots = await Screenshot.find(filterData).sort('-createdAt');
     const task = await Task.findOne({ _id: req.params.id })
       .populate('project_id')
       .populate('owner', 'name surname photo');
@@ -116,16 +118,19 @@ exports.getTask = catchAsync(async (req, res, next) => {
     const countActivity = await Activity.countDocuments();
     const countComments = await Comment.countDocuments();
     const countFiles = await File.countDocuments();
-
+    console.log('global.demo');
+    console.log(global.demo);
     res.status(200).json({
       title: 'Task detail',
       activities: formattedActivity,
       task,
       comments,
       files,
+      screenshots,
       countActivity,
       countComments,
       countFiles,
+      demo: global.demo,
     });
   } catch (err) {
     res.status(200).json({
