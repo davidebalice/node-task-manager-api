@@ -40,12 +40,12 @@ screenshotSchema.index({ owner: 1 });
 screenshotSchema.index({ task_id: 1 });
 
 screenshotSchema.pre('find', function (next) {
-  this.populate('owner', 'name surname email role');
+  this.populate('owner', 'name surname photo email role');
   next();
 });
 
 screenshotSchema.pre('findOne', function (next) {
-  this.populate('owner', 'name surname email role');
+  this.populate('owner', 'name surname photo email role');
   next();
 });
 

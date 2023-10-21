@@ -40,12 +40,12 @@ commentSchema.index({ owner: 1 });
 commentSchema.index({ task_id: 1 });
 
 commentSchema.pre('find', function (next) {
-  this.populate('owner', 'name surname email role');
+  this.populate('owner', 'name surname photo email role');
   next();
 });
 
 commentSchema.pre('findOne', function (next) {
-  this.populate('owner', 'name surname email role');
+  this.populate('owner', 'name surname photo email role');
   next();
 });
 

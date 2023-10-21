@@ -40,12 +40,12 @@ fileSchema.index({ owner: 1 });
 fileSchema.index({ task_id: 1 });
 
 fileSchema.pre('find', function (next) {
-  this.populate('owner', 'name surname email role');
+  this.populate('owner', 'name surname photo email role');
   next();
 });
 
 fileSchema.pre('findOne', function (next) {
-  this.populate('owner', 'name surname email role');
+  this.populate('owner', 'name surname photo email role');
   next();
 });
 
