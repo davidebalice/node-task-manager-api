@@ -8,17 +8,17 @@ router.use(authController.protect);
 
 router
   .route('/comment/:id')
-  .get(authController.protect, authController.restrictTo('admin'), commentController.getComments);
+  .get(authController.protect, commentController.getComments);
 
 router.route('/add/comment/').post(demoMode, authController.protect, commentController.createComment);
 
 router
   .route('/delete/comment/')
-  .post(demoMode, authController.protect, authController.restrictTo('admin'), commentController.deleteComment);
+  .post(demoMode, authController.protect, commentController.deleteComment);
 
 router
   .route('/update/comment/')
-  .post(authController.protect, authController.restrictTo('admin'), commentController.updateComment);
+  .post(authController.protect,  commentController.updateComment);
 
 /*
 router

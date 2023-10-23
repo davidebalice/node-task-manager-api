@@ -74,12 +74,12 @@ projectSchema.pre('find', function (next) {
 });
 
 projectSchema.pre('find', function (next) {
-  this.populate('members', 'name surname email role');
+  this.populate('members', 'name surname email role photo');
   next();
 });
 
 projectSchema.pre('findOne', function (next) {
-  this.populate('members', 'name surname email role');
+  this.populate('members', 'name surname email role photo');
   next();
 });
 

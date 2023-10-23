@@ -8,18 +8,18 @@ router.use(authController.protect);
 
 router
   .route('/activity/update-status')
-  .post(authController.protect, authController.restrictTo('admin'), activityController.updateStatus);
+  .post(authController.protect, activityController.updateStatus);
 
 router
   .route('/update/activity/')
-  .post(authController.protect, authController.restrictTo('admin'), activityController.updateActivity);
+  .post(authController.protect, activityController.updateActivity);
 
 router
   .route('/add/activity/')
-  .post(authController.protect, authController.restrictTo('admin'), activityController.createActivity);
+  .post(authController.protect, activityController.createActivity);
 
 router
   .route('/delete/activity/')
-  .post(authController.protect, authController.restrictTo('admin'), activityController.deleteActivity);
+  .post(authController.protect, activityController.deleteActivity);
 
 module.exports = router;

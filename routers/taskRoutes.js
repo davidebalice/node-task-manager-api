@@ -6,21 +6,23 @@ const router = express.Router({ mergeParams: true });
 
 router.use(authController.protect);
 
-router.route('/tasks/:id').get(authController.protect, authController.restrictTo('admin'), taskController.getAllTasks);
+router.route('/tasks/:id').get(authController.protect, taskController.getAllTasks);
 
-router.route('/task/:id').get(demoMode, authController.protect, authController.restrictTo('admin'), taskController.getTask);
+router.route('/task/:id').get(demoMode, authController.protect, taskController.getTask);
 
-router
-  .route('/add/task')
-  .post(demoMode, authController.protect, authController.restrictTo('admin'), taskController.createTask);
+router.route('/add/task').post(demoMode, authController.protect, taskController.createTask);
 
 router
   .route('/edit/task/:id')
   .get(demoMode, authController.protect, taskController.editTask)
-  .post(demoMode, authController.protect, authController.restrictTo('admin'), taskController.updateTask);
+  .post(demoMode, authController.protect, taskController.updateTask);
 
-router
-  .route('/task/delete/:id')
-  .post(demoMode, authController.protect, authController.restrictTo('admin', 'lead-guide'), taskController.deleteTask);
+router.route('/task/delete/:id').post(demoMode, authController.protect, taskController.deleteTask);
+
+router.route('/task/members/:id').post(demoMode, authController.protect, taskController.members);
+
+router.route('/add/member/task/').post(demoMode, authController.protect, taskController.AddMemberTask);
+
+router.route('/remove/member/task/').post(demoMode, authController.protect, taskController.RemoveMemberTask);
 
 module.exports = router;

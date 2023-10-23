@@ -72,13 +72,13 @@ exports.getProjects = catchAsync(async (req, res, next) => {
     const regex = new RegExp(req.query.key, 'i');
     filterData.name = { $regex: regex };
   }
-
+  /*
   if (userRole === 'admin') {
     filterData.$or = [{ owner: userId }];
   } else {
     filterData.$or = [{ owner: userId }, { 'members.user': userId }];
   }
-
+*/
   const setLimit = 12;
   const limit = req.query.limit * 1 || setLimit;
   const page = req.query.page * 1 || 1;
@@ -343,13 +343,12 @@ exports.AddMemberProject = catchAsync(async (req, res, next) => {
 
   const memberIds = project.members.map((member) => member._id.toString());
   if (!memberIds.includes(member._id)) {
-    const addMember = member._id;
-    project.members.push(addMember);
+    project.members.push(member);
     await project.save();
   }
 
   const allUsers = await User.find().sort({ surname: 1 });
-  const memberUserIds = project.members.map((member) => member.toString());
+  const memberUserIds = project.members.map((member) => member._id.toString());
   const filteredUsers = allUsers.filter((user) => !memberUserIds.includes(user._id.toString()));
 
   res.status(200).json({
@@ -376,9 +375,8 @@ exports.RemoveMemberProject = catchAsync(async (req, res, next) => {
   console.log(member._id);
 
   if (memberIds.includes(member._id.toString())) {
-    console.log('qui');
     const memberIndex = project.members.findIndex(
-      (projectMember) => projectMember.toString() === member._id.toString()
+      (projectMember) => projectMember._id.toString() === member._id.toString()
     );
     console.log(memberIndex);
     project.members.splice(memberIndex, 1);
@@ -386,7 +384,7 @@ exports.RemoveMemberProject = catchAsync(async (req, res, next) => {
   }
 
   const allUsers = await User.find().sort({ surname: 1 });
-  const memberUserIds = project.members.map((member) => member.toString());
+  const memberUserIds = project.members.map((member) => member._id.toString());
   const filteredUsers = allUsers.filter((user) => !memberUserIds.includes(user._id.toString()));
 
   res.status(200).json({

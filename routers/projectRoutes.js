@@ -15,14 +15,14 @@ router.route('/projects').get(authController.protect, projectController.getProje
 router
   .route('/add/project')
   .get(authController.protect, projectController.addProject)
-  .post(demoMode, authController.protect, authController.restrictTo('admin'), projectController.createProject);
+  .post(demoMode, authController.protect, projectController.createProject);
 
 router.route('/project/:id').get(demoMode, authController.protect, projectController.getProject);
 
 router
   .route('/edit/project/:id')
   .get(demoMode, authController.protect, projectController.editProject)
-  .post(demoMode, authController.protect, authController.restrictTo('admin'), projectController.updateProject);
+  .post(demoMode, authController.protect, projectController.updateProject);
 
 router.route('/project/members/:id').get(demoMode, authController.protect, projectController.membersProject);
 
@@ -35,7 +35,6 @@ router
   .post(
     demoMode,
     authController.protect,
-    authController.restrictTo('admin'),
     projectController.uploadImage,
     projectController.resizeImage,
     projectController.updatePhoto
@@ -46,7 +45,6 @@ router
   .post(
     demoMode,
     authController.protect,
-    authController.restrictTo('admin'),
     projectController.uploadGallery,
     projectController.resizeGallery,
     projectController.updateGallery
@@ -54,15 +52,15 @@ router
 
 router
   .route('/project/delete/:id')
-  .post(demoMode, authController.protect, authController.restrictTo('admin'), projectController.deleteProject);
+  .post(demoMode, authController.protect, projectController.deleteProject);
 
 router
   .route('/gallery/delete')
-  .post(demoMode, authController.protect, authController.restrictTo('admin'), projectController.deleteGallery);
+  .post(demoMode, authController.protect, projectController.deleteGallery);
 
 router
   .route('/active/project/:id')
-  .post(demoMode, authController.protect, authController.restrictTo('admin'), projectController.activeProject);
+  .post(demoMode, authController.protect, projectController.activeProject);
 
 router
   .route('/project/cover/:filename')

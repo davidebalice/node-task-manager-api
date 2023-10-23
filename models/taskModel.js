@@ -59,12 +59,12 @@ taskSchema.index({ owner: 1 });
 taskSchema.index({ project_id: 1 });
 
 taskSchema.pre('find', function (next) {
-  this.populate('members', 'name surname email role').populate('project_id');
+  this.populate('members', '_id name surname email role photo').populate('project_id');
   next();
 });
 
 taskSchema.pre('findOne', function (next) {
-  this.populate('members', 'name surname email role').populate('project_id');
+  this.populate('members', '_id name surname email role photo').populate('project_id');
   next();
 });
 

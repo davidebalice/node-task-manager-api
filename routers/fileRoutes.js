@@ -20,20 +20,20 @@ const upload = multer({ storage: storage });
 
 router.use(authController.protect);
 
-router.route('/file/:id').get(authController.protect, authController.restrictTo('admin'), fileController.getFile);
+router.route('/file/:id').get(authController.protect, fileController.getFile);
 
 router.route('/add/file/').post(demoMode, authController.protect, upload.any(), fileController.createFile);
 
 router
   .route('/delete/file/')
-  .post(demoMode, authController.protect, authController.restrictTo('admin'), fileController.deleteFile);
+  .post(demoMode, authController.protect, fileController.deleteFile);
 
 router
   .route('/update/file/')
-  .post(authController.protect, authController.restrictTo('admin'), fileController.updateFile);
+  .post(authController.protect, fileController.updateFile);
 
   router
   .route('/download/:filename')
-  .get(authController.protect, authController.restrictTo('admin'), fileController.download);
+  .get(authController.protect, fileController.download);
 
 module.exports = router;

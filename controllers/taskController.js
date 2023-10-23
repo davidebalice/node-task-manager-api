@@ -5,6 +5,7 @@ const Comment = require('../models/commentModel');
 const File = require('../models/fileModel');
 const Screenshot = require('../models/screenshotModel');
 const Activity = require('../models/activityModel');
+const User = require('../models/userModel');
 const Project = require('../models/projectModel');
 const AppError = require('../middlewares/error');
 const catchAsync = require('../middlewares/catchAsync');
@@ -200,5 +201,106 @@ exports.deleteTask = catchAsync(async (req, res, next) => {
   }
   res.status(200).json({
     status: 'success',
+  });
+});
+
+exports.members = catchAsync(async (req, res, next) => {
+  try {
+    let filterData = { task_id: req.params.id };
+    if (req.query.key) {
+      const regex = new RegExp(req.query.key, 'i');
+      filterData = { project_id: req.params.id, name: { $regex: regex } };
+    }
+    const task = await Task.findById(req.params.id);
+    const users = await User.find().sort({ surname: 1 }).select('_id name surname role photo');
+    const memberUserIds = task.members.map((member) => member._id.toString());
+    const filteredUsers = users.filter((user) => !memberUserIds.includes(user._id.toString()));
+
+    res.status(200).json({
+      members: task.members,
+      users: filteredUsers,
+    });
+  } catch (err) {
+    res.status(200).json({
+      message: err.message,
+    });
+  }
+});
+
+exports.AddMemberTask = catchAsync(async (req, res, next) => {
+  const task = await Task.findById(req.body.task_id);
+  const member = await User.findById(req.body.member_id);
+
+  if (!task || !member) {
+    return next(new AppError('No document found with that ID', 404));
+  }
+
+  const memberIds = task.members.map((member) => member._id.toString());
+  if (!memberIds.includes(member._id)) {
+    task.members.push(member);
+    await task.save();
+  }
+
+  const allUsers = await User.find().sort({ surname: 1 });
+  const memberUserIds = task.members.map((member) => member._id.toString());
+  const filteredUsers = allUsers.filter((user) => !memberUserIds.includes(user._id.toString()));
+
+  console.log('task.members');
+  console.log(task.members.length);
+  console.log(task.members);
+
+  res.status(200).json({
+    title: 'Task members',
+    task,
+    members: task.members,
+    users: filteredUsers,
+  });
+});
+
+exports.RemoveMemberTask = catchAsync(async (req, res, next) => {
+  const task = await Task.findById(req.body.task_id).populate('members.user', '_id name surname email role');
+  const member = await User.findById(req.body.member_id);
+
+  if (!task || !member) {
+    return next(new AppError('No document found with that ID', 404));
+  }
+
+  const memberIds = task.members.map((member) => member._id.toString());
+
+  console.log('memberIds');
+  console.log(memberIds);
+  console.log('member._id');
+  console.log(member._id);
+
+  if (memberIds.includes(member._id.toString())) {
+    // const memberIndex = task.members.findIndex((taskMember) => taskMember.toString() === member._id.toString());
+
+    const memberIndex = task.members.findIndex((taskMember) => {
+      console.log('taskMember:', taskMember._id.toString());
+      console.log('member._id:', member._id.toString());
+      return taskMember._id.toString() === member._id.toString();
+    });
+
+    console.log('req.body.member_id');
+    console.log(req.body.member_id);
+    console.log('memberIndex');
+    console.log(memberIndex);
+    task.members.splice(memberIndex, 1);
+    await task.save();
+  }
+
+  const allUsers = await User.find().sort({ surname: 1 });
+  const memberUserIds = task.members.map((member) => member._id.toString());
+  const filteredUsers = allUsers.filter((user) => !memberUserIds.includes(user._id.toString()));
+
+  console.log('task.members');
+  console.log(task.members.length);
+  console.log(task.members);
+
+  res.status(200).json({
+    title: 'Task members',
+    task,
+    members: task.members,
+    users: filteredUsers,
   });
 });

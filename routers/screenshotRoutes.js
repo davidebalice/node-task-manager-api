@@ -22,7 +22,7 @@ router.use(authController.protect);
 
 router
   .route('/screenshot/:id')
-  .get(authController.protect, authController.restrictTo('admin'), screenshotController.getScreenshot);
+  .get(authController.protect, screenshotController.getScreenshot);
 
 router
   .route('/add/screenshot/')
@@ -30,18 +30,18 @@ router
 
 router
   .route('/delete/screenshot/')
-  .post(demoMode, authController.protect, authController.restrictTo('admin'), screenshotController.deleteScreenshot);
+  .post(demoMode, authController.protect, screenshotController.deleteScreenshot);
 
 router
   .route('/update/screenshot/')
-  .post(authController.protect, authController.restrictTo('admin'), screenshotController.updateScreenshot);
+  .post(authController.protect, screenshotController.updateScreenshot);
 
 router
   .route('/screenshot/:filename')
-  .get(authController.protect, authController.restrictTo('admin'), screenshotController.download);
+  .get(authController.protect, screenshotController.download);
 
 router
   .route('/screenshot/img/:filename')
-  .get(authController.protect, authController.restrictTo('admin'), screenshotController.screenshotImg);
+  .get(authController.protect, screenshotController.screenshotImg);
 
 module.exports = router;

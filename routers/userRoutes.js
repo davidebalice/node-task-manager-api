@@ -18,7 +18,6 @@ router
   .post(
     demoMode,
     authController.protect,
-    authController.restrictTo('admin'),
     userController.uploadPhotoUser,
     userController.resizePhotoUser,
     userController.updatePhotoUser
@@ -31,13 +30,13 @@ router.route('/updateUser').patch(demoMode, userController.updateUser);
 
 router
   .route('/user/img/:filename')
-  .get(authController.protect, authController.restrictTo('admin'), userController.userImg);
+  .get(authController.protect, userController.userImg);
 
 router
   .route('/user/delete/:id')
   .post(demoMode, authController.protect, authController.restrictTo('admin'), userController.deleteUser);
 
-router.route('/users').get(authController.protect, authController.restrictTo('admin'), userController.getUsers);
+router.route('/users').get(authController.protect,  userController.getUsers);
 
 router
   .route('/add/user')
@@ -45,12 +44,12 @@ router
 
 router
   .route('/user/:id')
-  .get(authController.protect, authController.restrictTo('admin'), userController.editUser)
+  .get(authController.protect, userController.editUser)
   .post(demoMode, authController.protect, authController.restrictTo('admin'), userController.updateUser);
 
 router
   .route('/user/photo/:id')
-  .get(authController.protect, authController.restrictTo('admin'), userController.photoUser)
+  .get(authController.protect,  userController.photoUser)
   .post(
     demoMode,
     authController.protect,
@@ -66,7 +65,7 @@ router
 
 router
   .route('/send/email/user')
-  .post(demoMode, authController.protect, authController.restrictTo('admin'), userController.userEmail);
+  .post(demoMode, authController.protect, userController.userEmail);
 
 router
   .route('/user/password/:id')
