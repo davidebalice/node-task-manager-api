@@ -254,7 +254,7 @@ exports.deleteProject = catchAsync(async (req, res, next) => {
 });
 
 exports.getProject = catchAsync(async (req, res, next) => {
-  const project = await Project.findById(req.params.id).populate('owner', 'name surname photo');
+  const project = await Project.findById(req.params.id).populate('owner', 'name surname photo').populate('client', 'companyName');
 
   const activity = await Activity.findOne({ project_id: project.id }).sort('-lastUpdate');
 

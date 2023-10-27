@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const moment = require('moment');
 const Task = require('../models/taskModel');
+const Client = require('../models/clientModel');
 const Comment = require('../models/commentModel');
 const File = require('../models/fileModel');
 const Screenshot = require('../models/screenshotModel');
@@ -28,7 +29,9 @@ exports.getAllTasks = catchAsync(async (req, res, next) => {
   const page = req.query.page * 1 || 1;
   const limit = req.query.limit * 1 || 10;
   const skip = (page - 1) * limit;
-
+  const project = await Project.findOne({ _id: req.params.id }).select('client');
+  const client = await Client.findOne({ _id: project.client });
+  console.log(client);
   const tasks = await Task.aggregate(
     [
       {
@@ -65,6 +68,14 @@ exports.getAllTasks = catchAsync(async (req, res, next) => {
           as: 'activities',
         },
       },
+      {
+        $lookup: {
+          from: 'projects',
+          localField: 'project_id',
+          foreignField: '_id',
+          as: 'project',
+        },
+      },
     ],
     {
       debug: true,
@@ -91,6 +102,7 @@ exports.getAllTasks = catchAsync(async (req, res, next) => {
   res.status(200).json({
     title: 'Tasks',
     tasks: formattedTasks,
+    client,
   });
 });
 

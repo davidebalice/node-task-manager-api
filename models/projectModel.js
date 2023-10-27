@@ -84,7 +84,7 @@ projectSchema.pre('findOne', function (next) {
 });
 
 projectSchema.pre('find', function (next) {
-  this.populate('client', 'email');
+  this.populate('client', 'companyName email');
   next();
 });
 

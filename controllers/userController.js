@@ -82,7 +82,7 @@ exports.getUserByToken = catchAsync(async (req, res, next) => {
 
       res.status(200).json({
         user,
-        demo: global.demo,
+        demo: process.env.DEMO_MODE,
       });
     } catch (err) {
       res.status(400).json({
