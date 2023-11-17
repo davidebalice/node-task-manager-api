@@ -1,13 +1,13 @@
 {
-  "name": "symoxnode",
+  "name": "taskmanager",
   "version": "1.0.0",
-  "description": "Symox Node js",
+  "description": "Task manager backend",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "nodemon index.js"
   },
-  "author": "",
+  "author": "Davide Balice",
   "license": "ISC",
   "dependencies": {
     "assert": "^2.0.0",

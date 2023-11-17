@@ -1,0 +1,101 @@
+[{
+  "_id": {
+    "$oid": "6424725a7dc4effaa7bdb117"
+  },
+  "name": "Mario",
+  "surname": "Rossi",
+  "email": "mario@rossi.it",
+  "password": "$2b$10$6YP.95u0Hdc54Ow3jf4NDudIimgZ5LRZoqIzotqb.xbAEyOWwdJ1i",
+  "__v": 0,
+  "role": "admin",
+  "passwordChangedAt": {
+    "$date": {
+      "$numberLong": "1683117819155"
+    }
+  },
+  "passwordResetExpires": {
+    "$date": {
+      "$numberLong": "1680621610054"
+    }
+  },
+  "passwordResetToken": "1ef331bc77a83dab8746a824debf6919e4880e691cefc860c83f338b1d9dd5a8",
+  "active": true,
+  "photo": "user-6424725a7dc4effaa7bdb117-1697645069413.jpeg",
+  "createdAt": "2023-08-16",
+  "passwordConfirm": "$2b$10$62kMlLWhQIOFFs.hc42N0u6V4MDdK0XC38.GtrAa3YEyOPJ8azz.u",
+  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0MjQ3MjVhN2RjNGVmZmFhN2JkYjExNyIsImlhdCI6MTY5ODM0NTkwNSwiZXhwIjoxNzA2MTIxOTA1fQ.89hT2pRoM9J46rRelJid7C3bVCaTNe4rQ89BZNYDGNk"
+},{
+  "_id": {
+    "$oid": "6438045d0cb15e61c8a04e19"
+  },
+  "name": "Lisa",
+  "surname": "Brown",
+  "email": "lisa@example.com",
+  "role": "user",
+  "password": "$2a$12$uPH6mjOlTnGSfKRwrckpGOjBdU7beVJxklMB8hjvSfopicYVNd9q2",
+  "active": true,
+  "__v": 0,
+  "photo": "avatar-1.jpg"
+},{
+  "_id": {
+    "$oid": "643805780cb15e61c8a04e28"
+  },
+  "name": "Ayla",
+  "surname": "Cornell",
+  "email": "ayls@example.com",
+  "role": "user",
+  "password": "$2b$10$dYqVS99xbmtGI/UBD/RcS.d.EhhlOPOSvV6b4hT4SoSdcY1PEdrOu",
+  "active": true,
+  "__v": 0,
+  "photo": "avatar-8.jpg",
+  "passwordConfirm": "$2b$10$BUmZI2FPmU09jmzXb98vRu3HZFGfrKNJXRaYrfDFUe4GHUEyhhbAK",
+  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0MzgwNTc4MGNiMTVlNjFjOGEwNGUyOCIsImlhdCI6MTY5ODI1MjM4OCwiZXhwIjoxNzA2MDI4Mzg4fQ.TA9CKqNiBz9Mz7k2lbmwcSAc3_zTd3L52R-GleFiibo"
+},{
+  "_id": {
+    "$oid": "643805810cb15e61c8a04e2a"
+  },
+  "name": "Leo",
+  "surname": "Gillespie",
+  "email": "leo@example.com",
+  "role": "user",
+  "password": "$2a$12$bXWBwRAH0zZ7rPhvaxsc7eFGWx8H/rZUne4u5vY0yaKF1T2SQVJhK",
+  "active": true,
+  "__v": 0,
+  "photo": "avatar-2.jpg"
+},{
+  "_id": {
+    "$oid": "6438058c0cb15e61c8a04e2c"
+  },
+  "name": "Jennifer",
+  "surname": "Hardy",
+  "email": "jennifer@example.com",
+  "role": "user",
+  "password": "$2a$12$OZhv5fTJ63GOtmqg0uRaNOehU6UwDTFDHboEjXRYSCEV2zulQfag.",
+  "active": true,
+  "__v": 0,
+  "photo": "avatar-10.jpg"
+},{
+  "_id": {
+    "$oid": "643805960cb15e61c8a04e2e"
+  },
+  "name": "Kate",
+  "surname": "Morrison",
+  "email": "kate@example.com",
+  "role": "user",
+  "password": "$2a$12$k75FXwyidsqNMKzvnXfjgu0O9UjOkO1FGlwnyEVGBhNAvrK3CXeT6",
+  "active": true,
+  "__v": 0,
+  "photo": "avatar-3.jpg"
+},{
+  "_id": {
+    "$oid": "6438059e0cb15e61c8a04e30"
+  },
+  "name": "Adam",
+  "surname": "Stout",
+  "email": "eliana@example.com",
+  "role": "user",
+  "password": "$2a$12$Qu9zv9la2sA41kAhvHnJx.pBOF69bFoor17SSAJ5njT6mviLKbRje",
+  "active": true,
+  "__v": 0,
+  "photo": "avatar-9.jpg"
+}]
