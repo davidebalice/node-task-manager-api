@@ -1,0 +1,511 @@
+[{
+  "_id": {
+    "$oid": "651ac500dea761d285434254"
+  },
+  "task_id": {
+    "$oid": "651a62555d3e355b75932a1c"
+  },
+  "status": "Done",
+  "priority": "Medium",
+  "createdAt": {
+    "$date": "2023-10-11T07:51:43.861Z"
+  },
+  "deadline": {
+    "$date": "2023-10-21T07:51:43.861Z"
+  },
+  "project_id": {
+    "$oid": "6517bf64ce0756a902846f49"
+  },
+  "owner": {
+    "$oid": "6424725a7dc4effaa7bdb117"
+  },
+  "name": "name of activity 1",
+  "lastUpdate": {
+    "$date": "2023-10-25T16:45:00.749Z"
+  },
+  "lastUpdateUser": {
+    "$oid": "643805780cb15e61c8a04e28"
+  }
+},
+{
+  "_id": {
+    "$oid": "651acb37ce0756a9023207fa"
+  },
+  "task_id": {
+    "$oid": "651a62555d3e355b75932a1c"
+  },
+  "status": "Done",
+  "priority": "Medium",
+  "createdAt": {
+    "$date": "2023-10-11T07:51:43.861Z"
+  },
+  "deadline": {
+    "$date": "2023-10-21T07:51:43.861Z"
+  },
+  "project_id": {
+    "$oid": "6517bf64ce0756a902846f49"
+  },
+  "owner": {
+    "$oid": "6424725a7dc4effaa7bdb117"
+  },
+  "name": "name of activity 2",
+  "lastUpdate": {
+    "$date": "2023-11-01T00:00:00.000Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "651c0ddd80cea4628e435428"
+  },
+  "name": "tyujytytu",
+  "status": "Done",
+  "priority": "Medium",
+  "lastUpdate": {
+    "$date": "2023-10-01T00:00:00.000Z"
+  },
+  "deadline": {
+    "$date": "1970-01-01T00:00:00.000Z"
+  },
+  "project_id": {
+    "$oid": "6517bf64ce0756a902846f49"
+  },
+  "task_id": {
+    "$oid": "651a62555d3e355b75932a1c"
+  },
+  "owner": {
+    "$oid": "6424725a7dc4effaa7bdb117"
+  },
+  "createdAt": {
+    "$date": "2023-10-03T12:49:33.726Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "651c0e4580cea4628e435479"
+  },
+  "name": "dfgdfg",
+  "status": "In progress",
+  "priority": "Medium",
+  "lastUpdate": {
+    "$date": "2023-11-01T00:00:00.000Z"
+  },
+  "deadline": {
+    "$date": "2023-11-01T00:00:00.000Z"
+  },
+  "project_id": {
+    "$oid": "6517bf64ce0756a902846f49"
+  },
+  "task_id": {
+    "$oid": "651a62555d3e355b75932a1c"
+  },
+  "owner": {
+    "$oid": "6424725a7dc4effaa7bdb117"
+  },
+  "createdAt": {
+    "$date": "2023-10-03T12:51:17.518Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "651c0e4880cea4628e435482"
+  },
+  "name": "dfgdfg",
+  "status": "Done",
+  "priority": "Medium",
+  "lastUpdate": null,
+  "deadline": null,
+  "project_id": {
+    "$oid": "6517bf64ce0756a902846f49"
+  },
+  "task_id": {
+    "$oid": "651a62555d3e355b75932a1c"
+  },
+  "owner": {
+    "$oid": "6424725a7dc4effaa7bdb117"
+  },
+  "createdAt": {
+    "$date": "2023-10-03T12:51:20.892Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "651c0ff280cea4628e435639"
+  },
+  "name": "aerghegeagearger",
+  "status": "In progress",
+  "priority": "Medium",
+  "lastUpdate": null,
+  "deadline": null,
+  "project_id": {
+    "$oid": "6517bf64ce0756a902846f49"
+  },
+  "task_id": {
+    "$oid": "651a62555d3e355b75932a1c"
+  },
+  "owner": {
+    "$oid": "6424725a7dc4effaa7bdb117"
+  },
+  "createdAt": {
+    "$date": "2023-10-03T12:58:26.521Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "651c0ff680cea4628e435642"
+  },
+  "name": "aerghegeagearger",
+  "status": "Done",
+  "priority": "Medium",
+  "lastUpdate": {
+    "$date": "2023-10-15T09:06:06.458Z"
+  },
+  "deadline": null,
+  "project_id": {
+    "$oid": "6517bf64ce0756a902846f49"
+  },
+  "task_id": {
+    "$oid": "651a62555d3e355b75932a1c"
+  },
+  "owner": {
+    "$oid": "6424725a7dc4effaa7bdb117"
+  },
+  "createdAt": {
+    "$date": "2023-10-03T12:58:30.185Z"
+  },
+  "__v": 0,
+  "lastUpdateUser": {
+    "$oid": "6424725a7dc4effaa7bdb117"
+  }
+},
+{
+  "_id": {
+    "$oid": "651c106580cea4628e4356b2"
+  },
+  "name": "sdsdd",
+  "status": "Done",
+  "priority": "Medium",
+  "lastUpdate": {
+    "$date": "2023-10-15T09:06:07.196Z"
+  },
+  "deadline": null,
+  "project_id": {
+    "$oid": "6517bf64ce0756a902846f49"
+  },
+  "task_id": {
+    "$oid": "651a62555d3e355b75932a1c"
+  },
+  "owner": {
+    "$oid": "6424725a7dc4effaa7bdb117"
+  },
+  "createdAt": {
+    "$date": "2023-10-03T13:00:21.733Z"
+  },
+  "__v": 0,
+  "lastUpdateUser": {
+    "$oid": "6424725a7dc4effaa7bdb117"
+  }
+},
+{
+  "_id": {
+    "$oid": "651c106980cea4628e4356bb"
+  },
+  "name": "sdfdsfdsfdsf",
+  "status": "Done",
+  "priority": "Medium",
+  "lastUpdate": {
+    "$date": "2023-10-15T09:06:07.976Z"
+  },
+  "deadline": null,
+  "project_id": {
+    "$oid": "6517bf64ce0756a902846f49"
+  },
+  "task_id": {
+    "$oid": "651a62555d3e355b75932a1c"
+  },
+  "owner": {
+    "$oid": "6424725a7dc4effaa7bdb117"
+  },
+  "createdAt": {
+    "$date": "2023-10-03T13:00:25.240Z"
+  },
+  "__v": 0,
+  "lastUpdateUser": {
+    "$oid": "6424725a7dc4effaa7bdb117"
+  }
+},
+{
+  "_id": {
+    "$oid": "651c107980cea4628e4356f5"
+  },
+  "name": "fghghfg",
+  "status": "Done",
+  "priority": "Medium",
+  "lastUpdate": {
+    "$date": "2023-10-15T09:06:08.505Z"
+  },
+  "deadline": null,
+  "project_id": {
+    "$oid": "6517bf64ce0756a902846f49"
+  },
+  "task_id": {
+    "$oid": "651a62555d3e355b75932a1c"
+  },
+  "owner": {
+    "$oid": "6424725a7dc4effaa7bdb117"
+  },
+  "createdAt": {
+    "$date": "2023-10-03T13:00:41.252Z"
+  },
+  "__v": 0,
+  "lastUpdateUser": {
+    "$oid": "6424725a7dc4effaa7bdb117"
+  }
+},
+{
+  "_id": {
+    "$oid": "651c10e7d2e02f6daa8909e2"
+  },
+  "name": "457567",
+  "status": "In progress",
+  "priority": "Medium",
+  "lastUpdate": null,
+  "deadline": null,
+  "project_id": {
+    "$oid": "6517bf64ce0756a902846f49"
+  },
+  "task_id": {
+    "$oid": "651a62555d3e355b75932a1c"
+  },
+  "owner": {
+    "$oid": "6424725a7dc4effaa7bdb117"
+  },
+  "createdAt": {
+    "$date": "2023-10-03T13:02:31.260Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "651c12d20bcd76c86a4e0f9c"
+  },
+  "name": "fsghsfhfgh",
+  "status": "Done",
+  "priority": "Medium",
+  "lastUpdate": {
+    "$date": "2023-10-15T09:05:57.031Z"
+  },
+  "deadline": null,
+  "project_id": {
+    "$oid": "6517bf64ce0756a902846f49"
+  },
+  "task_id": {
+    "$oid": "651a62555d3e355b75932a1c"
+  },
+  "owner": {
+    "$oid": "6424725a7dc4effaa7bdb117"
+  },
+  "createdAt": {
+    "$date": "2023-10-03T13:10:42.097Z"
+  },
+  "__v": 0,
+  "lastUpdateUser": {
+    "$oid": "6424725a7dc4effaa7bdb117"
+  }
+},
+{
+  "_id": {
+    "$oid": "651c1cf90bcd76c86a4e10c5"
+  },
+  "name": "32432432",
+  "status": "Done",
+  "priority": "Medium",
+  "lastUpdate": {
+    "$date": "2023-10-15T09:05:55.464Z"
+  },
+  "deadline": null,
+  "project_id": {
+    "$oid": "6517bf64ce0756a902846f49"
+  },
+  "task_id": {
+    "$oid": "651a62555d3e355b75932a1c"
+  },
+  "owner": {
+    "$oid": "6424725a7dc4effaa7bdb117"
+  },
+  "createdAt": {
+    "$date": "2023-10-03T13:54:01.482Z"
+  },
+  "__v": 0,
+  "lastUpdateUser": {
+    "$oid": "6424725a7dc4effaa7bdb117"
+  }
+},
+{
+  "_id": {
+    "$oid": "651c3855efea90ead3f43d63"
+  },
+  "name": "truterueetruuytuty",
+  "status": "Done",
+  "priority": "Medium",
+  "lastUpdate": {
+    "$date": "2023-11-01T00:00:00.000Z"
+  },
+  "deadline": null,
+  "project_id": {
+    "$oid": "6517bf64ce0756a902846f49"
+  },
+  "task_id": {
+    "$oid": "651a62555d3e355b75932a1c"
+  },
+  "owner": {
+    "$oid": "6424725a7dc4effaa7bdb117"
+  },
+  "createdAt": {
+    "$date": "2023-10-03T15:50:45.519Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "651c394aefea90ead3f43daf"
+  },
+  "name": "12121212121212121111111111111111",
+  "status": "Done",
+  "priority": "Medium",
+  "lastUpdate": {
+    "$date": "2023-10-13T12:56:10.042Z"
+  },
+  "deadline": null,
+  "project_id": {
+    "$oid": "6517bf64ce0756a902846f49"
+  },
+  "task_id": {
+    "$oid": "651a62555d3e355b75932a1c"
+  },
+  "owner": {
+    "$oid": "6424725a7dc4effaa7bdb117"
+  },
+  "createdAt": {
+    "$date": "2023-10-03T15:54:50.563Z"
+  },
+  "__v": 0,
+  "lastUpdateUser": {
+    "$oid": "6424725a7dc4effaa7bdb117"
+  }
+},
+{
+  "_id": {
+    "$oid": "652fad2b9fef6562c51226ae"
+  },
+  "name": "3453434 erg e geg eg erg g rrrrrrrrrrrrergr grg 3453434 erg e geg eg erg g rrrrrrrrrrrrergr grg 3453434 erg e geg eg erg g rrrrrrrrrrrrergr grg 3453434 erg e geg eg erg g rrrrrrrrrrrrergr grg 3453434 erg e geg eg erg g rrrrrrrrrrrrergr grg er ",
+  "status": "In progress",
+  "priority": "Medium",
+  "lastUpdate": {
+    "$date": "2023-10-30T08:51:14.883Z"
+  },
+  "deadline": null,
+  "project_id": {
+    "$oid": "6517bf64ce0756a902846f49"
+  },
+  "task_id": {
+    "$oid": "651eb8293ca650974fac997a"
+  },
+  "owner": {
+    "$oid": "6424725a7dc4effaa7bdb117"
+  },
+  "lastUpdateUser": {
+    "$oid": "6424725a7dc4effaa7bdb117"
+  },
+  "createdAt": {
+    "$date": "2023-10-18T10:02:19.264Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "653f6bf4da7794da41de5153"
+  },
+  "name": "gfdgdfg",
+  "status": "Done",
+  "priority": "Medium",
+  "lastUpdate": {
+    "$date": "2023-11-13T08:08:32.072Z"
+  },
+  "deadline": null,
+  "project_id": {
+    "$oid": "6517bf64ce0756a902846f49"
+  },
+  "task_id": {
+    "$oid": "651eb8293ca650974fac997a"
+  },
+  "owner": {
+    "$oid": "6424725a7dc4effaa7bdb117"
+  },
+  "lastUpdateUser": {
+    "$oid": "6424725a7dc4effaa7bdb117"
+  },
+  "createdAt": {
+    "$date": "2023-10-30T08:40:20.619Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "653f6dceac019431fe6c3b13"
+  },
+  "name": "dfgfdg",
+  "status": "Done",
+  "priority": "Medium",
+  "lastUpdate": {
+    "$date": "2023-11-13T08:08:29.699Z"
+  },
+  "deadline": null,
+  "project_id": {
+    "$oid": "6517bf64ce0756a902846f49"
+  },
+  "task_id": {
+    "$oid": "651eb8293ca650974fac997a"
+  },
+  "owner": {
+    "$oid": "6424725a7dc4effaa7bdb117"
+  },
+  "lastUpdateUser": {
+    "$oid": "6424725a7dc4effaa7bdb117"
+  },
+  "createdAt": {
+    "$date": "2023-10-30T08:48:14.586Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "653f6ddcac019431fe6c3b3a"
+  },
+  "name": "sdsdc",
+  "status": "Done",
+  "priority": "Medium",
+  "lastUpdate": {
+    "$date": "2023-10-30T08:51:07.328Z"
+  },
+  "deadline": null,
+  "project_id": {
+    "$oid": "6517bf64ce0756a902846f49"
+  },
+  "task_id": {
+    "$oid": "651eb8293ca650974fac997a"
+  },
+  "owner": {
+    "$oid": "6424725a7dc4effaa7bdb117"
+  },
+  "lastUpdateUser": {
+    "$oid": "6424725a7dc4effaa7bdb117"
+  },
+  "createdAt": {
+    "$date": "2023-10-30T08:48:28.285Z"
+  },
+  "__v": 0
+}]

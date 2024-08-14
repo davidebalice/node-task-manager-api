@@ -1,0 +1,45 @@
+[{
+  "_id": {
+    "$oid": "6517d2d9ce0756a9028fa8d2"
+  },
+  "companyName": "Tech Company",
+  "name": "Giuseppe",
+  "surname": "Verdi",
+  "email": "info@techcompany.com",
+  "__v": 0,
+  "createdAt": "2023-09-18",
+  "photo": "client-undefined-1697644962456.jpeg"
+},
+{
+  "_id": {
+    "$oid": "65224b50a4d9c35ea94455ed"
+  },
+  "companyName": "treertert",
+  "name": "23423423",
+  "surname": "442",
+  "email": "retertetr@lk.lk",
+  "__v": 0,
+  "photo": "client-undefined-1697644971610.jpeg"
+},
+{
+  "_id": {
+    "$oid": "653001b63aa7ce3ddba077b9"
+  },
+  "companyName": "gergerger",
+  "name": "rgerg",
+  "surname": "gergrge",
+  "email": "ergerg@lk.lk",
+  "__v": 0,
+  "photo": "client-undefined-1697645003671.jpeg"
+},
+{
+  "_id": {
+    "$oid": "653001be3aa7ce3ddba077c8"
+  },
+  "companyName": "hdfg",
+  "name": "46546",
+  "surname": "fghfghfghfgh",
+  "email": "fghfg@lk.lk",
+  "__v": 0,
+  "photo": "client-undefined-1697645010400.jpeg"
+}]

@@ -369,11 +369,6 @@ exports.RemoveMemberProject = catchAsync(async (req, res, next) => {
 
   const memberIds = project.members.map((member) => member._id.toString());
 
-  console.log('memberIds');
-  console.log(memberIds);
-  console.log('member._id');
-  console.log(member._id);
-
   if (memberIds.includes(member._id.toString())) {
     const memberIndex = project.members.findIndex(
       (projectMember) => projectMember._id.toString() === member._id.toString()

@@ -1,0 +1,110 @@
+[{
+  "_id": {
+    "$oid": "65168e8d390fed50a6e50a62"
+  },
+  "name": "Project Name 1 aa b frth rtrwhwr wtrey ewtr wrthjwrrwthrthrthwrth",
+  "owner": {
+    "$oid": "6424725a7dc4effaa7bdb117"
+  },
+  "summary": "thwrth wrthwrthwr",
+  "members": [
+    {
+      "$oid": "6438045d0cb15e61c8a04e19"
+    },
+    {
+      "$oid": "6424725a7dc4effaa7bdb117"
+    },
+    {
+      "$oid": "6438058c0cb15e61c8a04e2c"
+    }
+  ],
+  "createdAt": {
+    "$date": "2023-09-21T07:51:43.861Z"
+  },
+  "budget": 6500,
+  "description": "erte rqe r try eyh",
+  "__v": 15,
+  "active": true,
+  "images": [],
+  "imageCover": "project-65168e8d390fed50a6e50a62-1697041685658-cover.jpeg"
+},
+{
+  "_id": {
+    "$oid": "6517bf64ce0756a902846f49"
+  },
+  "name": "Project Name 2",
+  "owner": {
+    "$oid": "6424725a7dc4effaa7bdb117"
+  },
+  "summary": "111222222222222",
+  "members": [
+    {
+      "$oid": "6438045d0cb15e61c8a04e19"
+    },
+    {
+      "$oid": "643805960cb15e61c8a04e2e"
+    },
+    {
+      "$oid": "6424725a7dc4effaa7bdb117"
+    }
+  ],
+  "createdAt": {
+    "$date": "2023-09-21T07:51:43.861Z"
+  },
+  "budget": 5000,
+  "description": "111122222222222222222222222222333333333333333333",
+  "__v": 35,
+  "active": true,
+  "images": [],
+  "client": {
+    "$oid": "6517d2d9ce0756a9028fa8d2"
+  },
+  "imageCover": "project-6517bf64ce0756a902846f49-1697041693333-cover.jpeg",
+  "lastUpdate": null
+},
+{
+  "_id": {
+    "$oid": "651935dc44d004426a938f4b"
+  },
+  "name": "rtyrtyrt",
+  "summary": "dsfsf",
+  "description": "sdfsdfsdf",
+  "images": [],
+  "createdAt": {
+    "$date": "2023-10-01T08:21:15.095Z"
+  },
+  "owner": {
+    "$oid": "6424725a7dc4effaa7bdb117"
+  },
+  "client": {
+    "$oid": "6517d2d9ce0756a9028fa8d2"
+  },
+  "budget": 111,
+  "active": true,
+  "members": [],
+  "__v": 0,
+  "imageCover": "project-651935dc44d004426a938f4b-1697041668770-cover.jpeg"
+},
+{
+  "_id": {
+    "$oid": "6519362a44d004426a938f61"
+  },
+  "name": "etrergrgreg",
+  "summary": "werwer",
+  "description": "werwer",
+  "images": [],
+  "createdAt": {
+    "$date": "2023-10-01T08:21:15.095Z"
+  },
+  "owner": {
+    "$oid": "6424725a7dc4effaa7bdb117"
+  },
+  "client": {
+    "$oid": "6517d2d9ce0756a9028fa8d2"
+  },
+  "budget": 12,
+  "active": true,
+  "members": [],
+  "__v": 0,
+  "imageCover": "project-6519362a44d004426a938f61-1697041677802-cover.jpeg"
+}]
