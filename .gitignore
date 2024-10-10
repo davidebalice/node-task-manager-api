@@ -4,7 +4,6 @@
 /public/storage
 /storage/*.key
 /vendor
-/uploads
 .env
 .env.backup
 .env.production
@@ -21,9 +20,6 @@ yarn-error.log
 *.txt
 config.php
 config*.*
-*.jpg
-*.png
-*.jpeg
 *.sql
 *.gif
 *.log

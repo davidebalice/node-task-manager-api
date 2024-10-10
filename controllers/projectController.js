@@ -455,7 +455,6 @@ exports.deleteGallery = catchAsync(async (req, res, next) => {
     console.log('File not exists:', image);
   }
 
-  //res.redirect('/project/photo/' + req.body.id);
   res.status(200).json({
     title: 'Delete photo',
     create: 'success',

@@ -44,6 +44,7 @@
     "sharp": "^0.32.1",
     "slugify": "^1.6.6",
     "stripe": "^12.12.0",
+    "taskmanager": "file:",
     "validator": "^13.9.0"
   },
   "repository": {}
