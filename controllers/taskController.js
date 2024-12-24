@@ -131,8 +131,7 @@ exports.getTask = catchAsync(async (req, res, next) => {
     const countActivity = await Activity.countDocuments();
     const countComments = await Comment.countDocuments();
     const countFiles = await File.countDocuments();
-    console.log('global.demo');
-    console.log(global.demo);
+
     res.status(200).json({
       title: 'Task detail',
       activities: formattedActivity,

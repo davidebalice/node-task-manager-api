@@ -14,7 +14,13 @@ global.token = '';
 
 app.use(
   cors({
-    origin: 'http://localhost:3000',
+    origin: function (origin, callback) {
+      if (!origin || /(^|\.)davidebalice\.dev$/.test(origin) || /^http:\/\/localhost(:\d{1,5})?$/.test(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error('Not allowed by CORS'));
+      }
+    },
     optionsSuccessStatus: 200,
   })
 );
