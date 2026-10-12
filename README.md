@@ -175,7 +175,7 @@ All endpoints are prefixed with `/api`. Except for `login` and `signup`, they re
 
 ## Project structure
 
-```
+```text
 controllers/   request handlers
 middlewares/   query helpers, errors, email, demo mode
 models/        Mongoose schemas
