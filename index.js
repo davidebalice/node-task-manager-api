@@ -3,7 +3,6 @@ const express = require('express');
 const mongoose = require('mongoose');
 const path = require('path');
 const http = require('http').Server(app);
-const validator = require('express-validator');
 const cookieParser = require('cookie-parser');
 const dotenv = require('dotenv');
 dotenv.config({ path: './config.env' });
@@ -26,9 +25,7 @@ app.use(
 );
 
 mongoose
-  .connect(DB, {
-    useNewUrlParser: true,
-  })
+  .connect(DB)
   .then(() => {
     console.log('DB connections successfully');
   })
@@ -61,6 +58,10 @@ app.use(
   })
 );
 app.use(bodyParser.json());
+app.use((req, res, next) => {
+  if (req.body === undefined) req.body = {};
+  next();
+});
 
 app.use(
   session({
@@ -115,6 +116,7 @@ app.use('/api/', commentRouter);
 app.use('/api/', fileRouter);
 app.use('/api/', screenshotRouter);
 
-http.listen(8000, function () {
-  console.log('listening on *:8000');
+const PORT = process.env.PORT || 8000;
+http.listen(PORT, function () {
+  console.log('listening on *:' + PORT);
 });

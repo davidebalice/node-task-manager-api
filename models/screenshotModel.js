@@ -39,19 +39,16 @@ const screenshotSchema = new mongoose.Schema(
 screenshotSchema.index({ owner: 1 });
 screenshotSchema.index({ task_id: 1 });
 
-screenshotSchema.pre('find', function (next) {
+screenshotSchema.pre('find', function () {
   this.populate('owner', 'name surname photo email role');
-  next();
 });
 
-screenshotSchema.pre('findOne', function (next) {
+screenshotSchema.pre('findOne', function () {
   this.populate('owner', 'name surname photo email role');
-  next();
 });
 
-screenshotSchema.pre(/^findOneAnd/, async function (next) {
+screenshotSchema.pre(/^findOneAnd/, async function () {
   this.r = await this.model.findOne();
-  next();
 });
 
 const Screenshot = mongoose.model('Screenshot', screenshotSchema);

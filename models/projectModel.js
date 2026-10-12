@@ -68,24 +68,20 @@ projectSchema.virtual('tasks', {
   localField: '_id',
 });
 
-projectSchema.pre('find', function (next) {
+projectSchema.pre('find', function () {
   this.populate('members.user');
-  next();
 });
 
-projectSchema.pre('find', function (next) {
+projectSchema.pre('find', function () {
   this.populate('members', 'name surname email role photo');
-  next();
 });
 
-projectSchema.pre('findOne', function (next) {
+projectSchema.pre('findOne', function () {
   this.populate('members', 'name surname email role photo');
-  next();
 });
 
-projectSchema.pre('find', function (next) {
+projectSchema.pre('find', function () {
   this.populate('client', 'companyName email');
-  next();
 });
 
 projectSchema.post('save', (doc, next) => {

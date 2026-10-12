@@ -58,19 +58,16 @@ const taskSchema = new mongoose.Schema(
 taskSchema.index({ owner: 1 });
 taskSchema.index({ project_id: 1 });
 
-taskSchema.pre('find', function (next) {
+taskSchema.pre('find', function () {
   this.populate('members', '_id name surname email role photo').populate('project_id');
-  next();
 });
 
-taskSchema.pre('findOne', function (next) {
+taskSchema.pre('findOne', function () {
   this.populate('members', '_id name surname email role photo').populate('project_id');
-  next();
 });
 
-taskSchema.pre(/^findOneAnd/, async function (next) {
+taskSchema.pre(/^findOneAnd/, async function () {
   this.r = await this.model.findOne();
-  next();
 });
 
 const Task = mongoose.model('Task', taskSchema);

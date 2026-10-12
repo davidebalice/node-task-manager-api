@@ -39,19 +39,16 @@ const commentSchema = new mongoose.Schema(
 commentSchema.index({ owner: 1 });
 commentSchema.index({ task_id: 1 });
 
-commentSchema.pre('find', function (next) {
+commentSchema.pre('find', function () {
   this.populate('owner', 'name surname photo email role');
-  next();
 });
 
-commentSchema.pre('findOne', function (next) {
+commentSchema.pre('findOne', function () {
   this.populate('owner', 'name surname photo email role');
-  next();
 });
 
-commentSchema.pre(/^findOneAnd/, async function (next) {
+commentSchema.pre(/^findOneAnd/, async function () {
   this.r = await this.model.findOne();
-  next();
 });
 
 const Comment = mongoose.model('Comment', commentSchema);

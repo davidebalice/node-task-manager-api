@@ -35,9 +35,8 @@ const categorySchema = new mongoose.Schema(
 
 categorySchema.index({ slug: 1 });
 
-categorySchema.pre('save', function (next) {
+categorySchema.pre('save', function () {
   this.slug = slugify(this.name, { lower: true });
-  next();
 });
 
 categorySchema.post('save', (doc, next) => {

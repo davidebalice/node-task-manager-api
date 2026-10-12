@@ -39,19 +39,16 @@ const fileSchema = new mongoose.Schema(
 fileSchema.index({ owner: 1 });
 fileSchema.index({ task_id: 1 });
 
-fileSchema.pre('find', function (next) {
+fileSchema.pre('find', function () {
   this.populate('owner', 'name surname photo email role');
-  next();
 });
 
-fileSchema.pre('findOne', function (next) {
+fileSchema.pre('findOne', function () {
   this.populate('owner', 'name surname photo email role');
-  next();
 });
 
-fileSchema.pre(/^findOneAnd/, async function (next) {
+fileSchema.pre(/^findOneAnd/, async function () {
   this.r = await this.model.findOne();
-  next();
 });
 
 const File = mongoose.model('File', fileSchema);

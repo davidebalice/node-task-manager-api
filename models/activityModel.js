@@ -57,29 +57,24 @@ const activitySchema = new mongoose.Schema(
 activitySchema.index({ owner: 1 });
 activitySchema.index({ task_id: 1 });
 
-activitySchema.pre('find', function (next) {
+activitySchema.pre('find', function () {
   this.populate('owner', 'name surname email role photo');
-  next();
 });
 
-activitySchema.pre('findOne', function (next) {
+activitySchema.pre('findOne', function () {
   this.populate('owner', 'name surname email role photo');
-  next();
 });
 
-activitySchema.pre('find', function (next) {
+activitySchema.pre('find', function () {
   this.populate('lastUpdateUser', 'name surname email role photo');
-  next();
 });
 
-activitySchema.pre('findOne', function (next) {
+activitySchema.pre('findOne', function () {
   this.populate('lastUpdateUser', 'name surname email role');
-  next();
 });
 
-activitySchema.pre(/^findOneAnd/, async function (next) {
+activitySchema.pre(/^findOneAnd/, async function () {
   this.r = await this.model.findOne();
-  next();
 });
 
 const Activity = mongoose.model('Activity', activitySchema);
