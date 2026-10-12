@@ -107,7 +107,7 @@ exports.deleteMe = catchAsync(async (req, res, next) => {
 });
 
 exports.clientImg = catchAsync(async (req, res, next) => {
-  const filename = req.params.filename;
+  const filename = path.basename(req.params.filename);
   const filePath = path.join(process.env.FILE_PATH, 'uploads/clients', filename);
   res.sendFile(filePath);
 });

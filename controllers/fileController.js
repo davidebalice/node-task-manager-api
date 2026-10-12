@@ -141,7 +141,7 @@ exports.updateFile = catchAsync(async (req, res, next) => {
 });
 
 exports.download = catchAsync(async (req, res, next) => {
-  const filename = req.params.filename;
+  const filename = path.basename(req.params.filename);
   const filePath = path.join(process.env.FILE_PATH, 'uploads/tasks', filename);
 
   res.download(filePath, (err) => {

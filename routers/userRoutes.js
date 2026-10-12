@@ -30,7 +30,7 @@ router.route('/updateUser').patch(demoMode, userController.updateUser);
 
 router
   .route('/user/img/:filename')
-  .get(authController.protect, userController.userImg);
+  .get(userController.userImg);
 
 router
   .route('/user/delete/:id')

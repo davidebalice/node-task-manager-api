@@ -15,7 +15,6 @@ const signToken = (id) =>
 
 const createSendToken = (user, statusCode, req, res) => {
   const token = signToken(user._id);
-  global.token = token;
   
   const cookieOptions = {
     expires: new Date(Date.now() + process.env.JWT_COOKIE_EXPIRES_IN * 24 * 60 * 60 * 1000),
@@ -87,19 +86,19 @@ exports.login = catchAsync(async (req, res, next) => {
   const { email, password } = req.body;
 
   if (!email || !password) {
-    errorLogin(res);
+    return errorLogin(res);
   }
 
   const user = await User.findOne({ email: email }).select('+password');
 
   if (!user) {
-    errorLogin(res);
+    return errorLogin(res);
   }
 
   const correct = await user.correctPassword(password, user.password);
 
   if (!correct) {
-    errorLogin(res);
+    return errorLogin(res);
   }
   await createSendToken(user, 200, req, res);
 });
@@ -121,20 +120,12 @@ exports.protect = catchAsync(async (req, res, next) => {
   let token;
   if (req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {
     token = req.headers.authorization.split(' ')[1];
-  } else {
-
-    if(global.token){
-      token=global.token;
-    }
-    else{
-      if (req.cookies.jwt) {
-        token = req.cookies.jwt;
-      }
-    }
+  } else if (req.cookies.jwt) {
+    token = req.cookies.jwt;
   }
 
-  if (!token || token === undefined) {
-    res.status(400).json({
+  if (!token) {
+    return res.status(401).json({
       status: 'error',
       messag: 'error login',
     });

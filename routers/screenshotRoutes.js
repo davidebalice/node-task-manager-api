@@ -40,8 +40,5 @@ router
   .route('/screenshot/:filename')
   .get(authController.protect, screenshotController.download);
 
-router
-  .route('/screenshot/img/:filename')
-  .get(authController.protect, screenshotController.screenshotImg);
 
 module.exports = router;

@@ -8,9 +8,6 @@ const urlencodeParser = bodyParser.urlencoded({ extended: false });
 
 router.use(authController.protect);
 
-router
-  .route('/client/img/:filename')
-  .get(authController.protect, authController.restrictTo('admin'), clientController.clientImg);
 
 router
   .route('/client/delete/:id')

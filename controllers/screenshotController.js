@@ -141,7 +141,7 @@ exports.updateScreenshot = catchAsync(async (req, res, next) => {
 });
 
 exports.download = catchAsync(async (req, res, next) => {
-  const filename = req.params.filename;
+  const filename = path.basename(req.params.filename);
   const filePath = path.join(process.env.FILE_PATH, 'uploads/screenshots', filename);
 
   res.download(filePath, (err) => {
@@ -184,7 +184,7 @@ exports.resizeGallery = catchAsync(async (req, res, next) => {
 });
 
 exports.screenshotImg = catchAsync(async (req, res, next) => {
-  const filename = req.params.filename;
+  const filename = path.basename(req.params.filename);
   const filePath = path.join(process.env.FILE_PATH, 'uploads/screenshots', filename);
   res.sendFile(filePath);
 });

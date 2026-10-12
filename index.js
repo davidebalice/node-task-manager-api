@@ -9,8 +9,6 @@ dotenv.config({ path: './config.env' });
 const DB = process.env.DATABASE;
 const cors = require('cors');
 
-global.token = '';
-
 app.use(
   cors({
     origin: function (origin, callback) {
@@ -95,6 +93,7 @@ app.use(
 app.use(express.static(path.join(__dirname, 'public')));
 
 const authRouter = require('./routers/authRoutes');
+const publicFileRouter = require('./routers/publicFileRoutes');
 const dashboardRouter = require('./routers/dashboardRoutes');
 const projectRouter = require('./routers/projectRoutes');
 const userRouter = require('./routers/userRoutes');
@@ -105,6 +104,7 @@ const commentRouter = require('./routers/commentRoutes');
 const fileRouter = require('./routers/fileRoutes');
 const screenshotRouter = require('./routers/screenshotRoutes');
 
+app.use('/api/', publicFileRouter);
 app.use('/api/', authRouter);
 app.use('/api/', dashboardRouter);
 app.use('/api/', projectRouter);

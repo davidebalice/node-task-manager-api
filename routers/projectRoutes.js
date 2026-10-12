@@ -64,6 +64,6 @@ router
 
 router
   .route('/project/cover/:filename')
-  .get(authController.protect, projectController.cover);
+  .get(projectController.cover);
 
 module.exports = router;

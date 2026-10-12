@@ -32,8 +32,5 @@ router
   .route('/update/file/')
   .post(authController.protect, fileController.updateFile);
 
-  router
-  .route('/download/:filename')
-  .get(authController.protect, fileController.download);
 
 module.exports = router;
